@@ -1,10 +1,9 @@
 // <copyright file="LiquidParserTests.cs">
 // Licensed under the open source Apache License, Version 2.0.
 // Project: AzureLiquid.Tests
-// Created: 2022-10-13 13:22
+// Created: 2022-10-18 07:48
 // </copyright>
 
-using AzureLiquid;
 using FluentAssertions;
 using Xunit;
 
@@ -119,7 +118,7 @@ namespace AzureLiquid.Tests
                 .Render();
 
             // Assert
-            result.Should().NotBeEmpty("A result should have been returned"); 
+            result.Should().NotBeEmpty("A result should have been returned");
         }
     }
 }
