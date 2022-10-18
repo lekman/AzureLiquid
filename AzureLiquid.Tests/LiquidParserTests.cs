@@ -4,6 +4,7 @@
 // Created: 2022-10-18 07:48
 // </copyright>
 
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using Xunit;
 
@@ -14,6 +15,18 @@ namespace AzureLiquid.Tests
     /// </summary>
     public partial class LiquidParserTests
     {
+        /// <summary>
+        /// Compares two text snippets but ignores differences in whitespace.
+        /// </summary>
+        /// <param name="text1">The first text.</param>
+        /// <param name="text2">The second text.</param>
+        /// <returns><c>true</c> if the texts match, otherwise <c>false</c>.</returns>
+        private bool TextComparisonNoWhitespace(string text1, string text2)
+        {
+            var spaces = new Regex(@"[\s]*");
+            return string.Compare(spaces.Replace(text1, string.Empty), spaces.Replace(text2, string.Empty)) == 0;
+        }
+
         /// <summary>
         /// Ensures the basic parsing works from a simple object.
         /// </summary>
@@ -91,7 +104,8 @@ namespace AzureLiquid.Tests
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.Event.Expected, "The expected result should be returned");
+            TextComparisonNoWhitespace(result, instance.Event.Expected!).Should()
+                .BeTrue("The expected result should be returned");
         }
 
         [Fact]
