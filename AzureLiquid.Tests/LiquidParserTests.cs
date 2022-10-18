@@ -94,5 +94,32 @@ namespace AzureLiquid.Tests
             result.Should().NotBeEmpty("A result should have been returned");
             result.Should().Be(instance.Event.Expected, "The expected result should be returned");
         }
+
+        [Fact]
+        public void EnsureXmlStringParsing()
+        {
+            // Arrange
+            var instance = new Arrangement();
+            var xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<CATALOG>
+  <CD>
+    <TITLE>Empire Burlesque</TITLE>
+    <ARTIST>Bob Dylan</ARTIST>
+    <COUNTRY>USA</COUNTRY>
+    <COMPANY>Columbia</COMPANY>
+    <PRICE>10.90</PRICE>
+    <YEAR>1985</YEAR>
+  </CD>
+</CATALOG>";
+
+            // Act
+            var result = new LiquidParser()
+                .SetContentXml(xml)
+                .Parse("Template here")
+                .Render();
+
+            // Assert
+            result.Should().NotBeEmpty("A result should have been returned"); 
+        }
     }
 }
