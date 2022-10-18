@@ -21,10 +21,10 @@ namespace AzureLiquid.Tests
         /// <param name="text1">The first text.</param>
         /// <param name="text2">The second text.</param>
         /// <returns><c>true</c> if the texts match, otherwise <c>false</c>.</returns>
-        private bool TextComparisonNoWhitespace(string text1, string text2)
+        private static bool CompareTextsNoWhitespace(string text1, string text2)
         {
             var spaces = new Regex(@"[\s]*");
-            return string.Compare(spaces.Replace(text1, string.Empty), spaces.Replace(text2, string.Empty)) == 0;
+            return string.CompareOrdinal(spaces.Replace(text1, string.Empty), spaces.Replace(text2, string.Empty)) == 0;
         }
 
         /// <summary>
@@ -54,17 +54,17 @@ namespace AzureLiquid.Tests
         public void EnsureDeepParsing()
         {
             // Arrange
-            var instance = new Arrangement();
+            var instance = new Arrangement().Deep;
 
             // Act
             var result = new LiquidParser()
-                .SetContent(instance.Deep.Content, true)
-                .Parse(instance.Deep.Template)
+                .SetContent(instance.Content, true)
+                .Parse(instance.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.Deep.Expected, "The expected result should be returned");
+            result.Should().Be(instance.Expected, "The expected result should be returned");
         }
 
         /// <summary>
@@ -74,17 +74,17 @@ namespace AzureLiquid.Tests
         public void EnsureTemplateParsing()
         {
             // Arrange
-            var instance = new Arrangement();
+            var instance = new Arrangement().SimpleTemplate;
 
             // Act
             var result = new LiquidParser()
-                .SetContent(instance.SimpleTemplate.Content)
-                .Parse(instance.SimpleTemplate.Template)
+                .SetContent(instance.Content)
+                .Parse(instance.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.SimpleTemplate.Expected, "The expected result should be returned");
+            result.Should().Be(instance.Expected, "The expected result should be returned");
         }
 
         /// <summary>
@@ -94,17 +94,17 @@ namespace AzureLiquid.Tests
         public void EnsureJsonBodyTemplateParsing()
         {
             // Arrange
-            var instance = new Arrangement();
+            var instance = new Arrangement().Event;
 
             // Act
             var result = new LiquidParser()
-                .SetContentJson(instance.Event.Content!)
-                .Parse(instance.Event.Template)
+                .SetContentJson(instance.Content!)
+                .Parse(instance.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            TextComparisonNoWhitespace(result, instance.Event.Expected!).Should()
+            CompareTextsNoWhitespace(result, instance.Expected!).Should()
                 .BeTrue("The expected result should be returned");
         }
 
@@ -112,27 +112,18 @@ namespace AzureLiquid.Tests
         public void EnsureXmlStringParsing()
         {
             // Arrange
-            var instance = new Arrangement();
-            var xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<CATALOG>
-  <CD>
-    <TITLE>Empire Burlesque</TITLE>
-    <ARTIST>Bob Dylan</ARTIST>
-    <COUNTRY>USA</COUNTRY>
-    <COMPANY>Columbia</COMPANY>
-    <PRICE>10.90</PRICE>
-    <YEAR>1985</YEAR>
-  </CD>
-</CATALOG>";
+            var instance = new Arrangement().Albums;
 
             // Act
             var result = new LiquidParser()
-                .SetContentXml(xml)
-                .Parse("Template here")
+                .SetContentXml(instance.Content!)
+                .Parse(instance.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
+            CompareTextsNoWhitespace(result, instance.Expected!).Should()
+                .BeTrue("The expected result should be returned");
         }
     }
 }

@@ -42,6 +42,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\albums.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\albums.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\event.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

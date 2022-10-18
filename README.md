@@ -2,7 +2,8 @@
 
  Allows programmatic parsing, unit testing and live preview of Liquid templates, specifically designed for the Azure cloud services.
 
-[![Unit Tests](https://github.com/lekman/Liquid.Parser/actions/workflows/ci_unit_tests.yml/badge.svg)](https://github.com/lekman/Liquid.Parser/actions/workflows/ci_unit_tests.yml) [![Code Analysis](https://github.com/lekman/Liquid.Parser/actions/workflows/codeql.yml/badge.svg)](https://github.com/lekman/Liquid.Parser/actions/workflows/codeql.yml)
+[![Unit Tests](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml)
+[![Code Analysis](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml/badge.svg)](https://github.com/lekman/Liquid.Parser/actions/workflows/codeql.yml)
 [![NuGet](https://img.shields.io/nuget/v/azureliquid.svg)](https://www.nuget.org/packages/azureliquid)
 
 ## Overview
@@ -77,4 +78,29 @@ You could similarly load the content and templates from a set of file. See the [
 
 ## Enabling Live Preview During Development
 
-TODO
+Using the Live Preview console application, we can set a file watcher that automatically renders the output as any changes occur to the source data or Liquid template.
+
+For now, the process is started from the terminal using a set of arguments.
+
+| Argument   | Description                                                               |
+|------------|---------------------------------------------------------------------------|
+| --help     | Shows help description within the console                                 |
+| --watch    | Switch parameter to enable file watcher and produce output on file update |
+| --template | Relative path to the .liquid template source file                         |
+| --content  | Relative path to the XML or JSON data source file                         |
+| --output   | Relative path to the output result file                                   |
+
+For example:
+
+```bash
+AzureLiquidPreview --watch --content ./albums.xml --template ./albums.liquid --output ./albums.json
+```
+
+I have simply arranged the three files in VSCode and get preview on the right hand side whenever the template or XML source is changed.
+
+<img src="Documentation/live-preview-console-vscode.png" />
+
+Future changes that are planned:
+
+- Nuget package with installer to create global console tool
+- VSCode plugin that allows starting/stopping preview from the UI or from the command palette

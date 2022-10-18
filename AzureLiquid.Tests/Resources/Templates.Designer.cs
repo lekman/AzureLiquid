@@ -61,23 +61,93 @@ namespace AzureLiquid.Tests.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+        ///&lt;CATALOG&gt;
+        ///	&lt;CD&gt;
+        ///		&lt;TITLE&gt;Empire Burlesque&lt;/TITLE&gt;
+        ///		&lt;ARTIST&gt;Bob Dylan&lt;/ARTIST&gt;
+        ///		&lt;COUNTRY&gt;USA&lt;/COUNTRY&gt;
+        ///		&lt;COMPANY&gt;Columbia&lt;/COMPANY&gt;
+        ///		&lt;PRICE&gt;10.90&lt;/PRICE&gt;
+        ///		&lt;YEAR&gt;1985&lt;/YEAR&gt;
+        ///	&lt;/CD&gt;
+        ///	&lt;CD&gt;
+        ///		&lt;TITLE&gt;Hide your heart&lt;/TITLE&gt;
+        ///		&lt;ARTIST&gt;Bonnie Tyler&lt;/ARTIST&gt;
+        ///		&lt;COUNTRY&gt;UK&lt;/COUNTRY&gt;
+        ///		&lt;COMPANY&gt;CBS Records&lt;/COMPANY&gt;
+        ///		&lt;PRICE&gt;9.90&lt;/PRICE&gt;
+        ///		&lt;YEAR&gt;1988&lt;/YEAR&gt;
+        ///	&lt;/CD&gt;
+        ///	&lt;CD&gt;
+        ///		&lt;TITLE&gt;Greatest Hits&lt;/TITLE&gt;
+        ///		&lt;ARTIST&gt;Dolly Parton&lt;/ARTIST&gt;
+        ///		&lt;COUNTRY&gt;USA&lt;/COUNTR [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AlbumsContent {
+            get {
+                return ResourceManager.GetString("AlbumsContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [
+        ///  {
+        ///    &quot;artist&quot;: &quot;Bob Dylan&quot;,
+        ///    &quot;title&quot;: &quot;Empire Burlesque&quot;
+        ///  },
+        ///
+        ///  {
+        ///    &quot;artist&quot;: &quot;Bonnie Tyler&quot;,
+        ///    &quot;title&quot;: &quot;Hide your heart&quot;
+        ///  },
+        ///
+        ///  {
+        ///    &quot;artist&quot;: &quot;Dolly Parton&quot;,
+        ///    &quot;title&quot;: &quot;Greatest Hits&quot;
+        ///  }
+        ///].
+        /// </summary>
+        internal static string AlbumsResult {
+            get {
+                return ResourceManager.GetString("AlbumsResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {% assign albums = content.CATALOG.CD -%}
+        ///[{%- for album in albums limit:3 %}
+        ///  {
+        ///    &quot;artist&quot;: &quot;{{ album.ARTIST }}&quot;,
+        ///    &quot;title&quot;: &quot;{{ album.TITLE}}&quot;
+        ///  }{% if forloop.last == false %},{% endif %}
+        ///  {%- endfor -%}
+        ///].
+        /// </summary>
+        internal static string AlbumsTemplate {
+            get {
+                return ResourceManager.GetString("AlbumsTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {
-        ///  &quot;contentSource&quot;: &quot;ikano.sg/bc.14/availability&quot;,
+        ///  &quot;contentSource&quot;: &quot;warehouse/uk.ldn.15/availability&quot;,
         ///  &quot;data&quot;: {
-        ///    &quot;bufferStock&quot;: -7,
-        ///    &quot;businessUnitCode&quot;: &quot;001&quot;,
-        ///    &quot;businessUnitType&quot;: &quot;STO&quot;,
-        ///    &quot;id&quot;: &quot;lFWpkKiJju&quot;,
-        ///    &quot;inTransit&quot;: 0,
-        ///    &quot;itemType&quot;: &quot;ART&quot;,
+        ///    &quot;id&quot;: &quot;IXP89373722/0/10&quot;,
+        ///    &quot;inTransit&quot;: 7,
         ///    &quot;lastModified&quot;: &quot;2022-10-04T08:17:44.7148833Z&quot;,
         ///    &quot;quantityReserved&quot;: 0,
-        ///    &quot;sellableStock&quot;: 10000,
-        ///    &quot;stockInPicking&quot;: 10007
+        ///    &quot;sellableStock&quot;: 107
         ///  },
         ///  &quot;dataSchema&quot;:
-        ///    &quot;https://github.com/inter-ikea/cbf-ross-rpic-bc-inventoryexport/blob/main/Schemas/invexp.update.input.v1.schema.json&quot;,
-        ///  [rest of string was truncated]&quot;;.
+        ///    &quot;https://github.com/lekman/AzureLiquid/blob/main/Schemas/foo.schema.json&quot;,
+        ///  &quot;dataVersion&quot;: &quot;1.0&quot;,
+        ///  &quot;eventType&quot;: &quot;Warehouse.Stock.Updated&quot;,
+        ///  &quot;metadataVersion&quot;: &quot;1.0&quot;,
+        ///  &quot;spanId&quot;: &quot;08585367190449175535730254221CU00&quot;,
+        ///  &quot;subject&quot;: &quot;public&quot;,
+        ///  &quot;trac [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string EventContent {
             get {
@@ -87,7 +157,8 @@ namespace AzureLiquid.Tests.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///	&quot;bufferStock&quot;: &quot;-7&quot;
+        ///  &quot;available&quot;: 107,
+        ///  &quot;id&quot;: &quot;IXP89373722/0/10&quot;
         ///}.
         /// </summary>
         internal static string EventResult {
@@ -98,7 +169,8 @@ namespace AzureLiquid.Tests.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///	&quot;bufferStock&quot;: &quot;{{ content.data.bufferStock }}&quot;
+        ///  &quot;available&quot;: {{ content.data.sellableStock }},
+        ///  &quot;id&quot;: &quot;{{ content.data.id }}&quot;
         ///}.
         /// </summary>
         internal static string EventTemplate {

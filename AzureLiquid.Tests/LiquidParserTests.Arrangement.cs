@@ -42,7 +42,16 @@ namespace AzureLiquid.Tests
                     Template = Templates.EventTemplate,
                     Expected = Templates.EventResult
                 };
+
+                Albums = new TemplateFact<string>
+                {
+                    Content = Templates.AlbumsContent,
+                    Template = Templates.AlbumsTemplate,
+                    Expected = Templates.AlbumsResult
+                };
             }
+
+            public TemplateFact<string> Albums { get; }
 
             public TemplateFact<string> Event { get; }
 

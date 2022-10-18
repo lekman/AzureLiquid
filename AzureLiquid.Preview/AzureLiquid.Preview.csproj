@@ -5,11 +5,20 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>LiquidPreview</AssemblyName>
+    <AssemblyName>AzureLiquidPreview</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../AzureLiquid/AzureLiquid.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Sample\albums.liquid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample\albums.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
