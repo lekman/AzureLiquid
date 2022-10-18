@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Rpic.Common.Liquid.Preview": {
+      "commandName": "Project",
+      "commandLineArgs": "--help --watch --content ../../../Sample/sample.json --template ../../../Sample/sample.liquid --output ./preview.txt"
+    }
+  }
+}

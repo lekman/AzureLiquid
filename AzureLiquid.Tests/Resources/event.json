@@ -1,0 +1,18 @@
+{
+  "contentSource": "warehouse/uk.ldn.15/availability",
+  "data": {
+    "id": "IXP89373722/0/10",
+    "inTransit": 7,
+    "lastModified": "2022-10-04T08:17:44.7148833Z",
+    "quantityReserved": 0,
+    "sellableStock": 107
+  },
+  "dataSchema":
+    "https://github.com/lekman/AzureLiquid/blob/main/Schemas/foo.schema.json",
+  "dataVersion": "1.0",
+  "eventType": "Warehouse.Stock.Updated",
+  "metadataVersion": "1.0",
+  "spanId": "08585367190449175535730254221CU00",
+  "subject": "public",
+  "traceId": "bfdc079a-6c3a-4721-9636-27f2ed5e51e5"
+}

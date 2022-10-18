@@ -1,0 +1,3 @@
+﻿<p>
+    <h1>Simple Template</h1>
+</p>
