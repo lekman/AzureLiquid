@@ -3,7 +3,7 @@
  Allows programmatic parsing, unit testing and live preview of Liquid templates, specifically designed for the Azure cloud services.
 
 [![Unit Tests](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml)
-[![Code Analysis](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml)
+[![Code Analysis](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml)
 [![NuGet](https://img.shields.io/nuget/v/AzureLiquid.svg)](https://www.nuget.org/packages/AzureLiquid)
 
 ## Overview
