@@ -1,0 +1,17 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [feature-*]
+
+jobs:
+  unit:
+    name: Unit Tests
+    uses: ./.github/workflows/build_verification_bicep.yml
+    secrets: inherit
+    with:
+      project_path: .
+      use_submodules: false
+      run_tests: true
