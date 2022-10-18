@@ -9,7 +9,7 @@ on:
 jobs:
   unit:
     name: Unit Tests
-    uses: ./.github/workflows/build_verification_bicep.yml
+    uses: ./.github/workflows/build_verification_dotnet.yml
     secrets: inherit
     with:
       project_path: .
