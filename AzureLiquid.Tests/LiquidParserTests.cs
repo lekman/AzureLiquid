@@ -1,10 +1,10 @@
 // <copyright file="LiquidParserTests.cs">
 // Licensed under the open source Apache License, Version 2.0.
 // Project: AzureLiquid.Tests
-// Created: 2022-10-13 13:22
+// Created: 2022-10-18 07:48
 // </copyright>
 
-using AzureLiquid;
+using System.Text.RegularExpressions;
 using FluentAssertions;
 using Xunit;
 
@@ -15,6 +15,18 @@ namespace AzureLiquid.Tests
     /// </summary>
     public partial class LiquidParserTests
     {
+        /// <summary>
+        /// Compares two text snippets but ignores differences in whitespace.
+        /// </summary>
+        /// <param name="text1">The first text.</param>
+        /// <param name="text2">The second text.</param>
+        /// <returns><c>true</c> if the texts match, otherwise <c>false</c>.</returns>
+        private static bool CompareTextsNoWhitespace(string text1, string text2)
+        {
+            var spaces = new Regex(@"[\s]*");
+            return string.CompareOrdinal(spaces.Replace(text1, string.Empty), spaces.Replace(text2, string.Empty)) == 0;
+        }
+
         /// <summary>
         /// Ensures the basic parsing works from a simple object.
         /// </summary>
@@ -42,17 +54,17 @@ namespace AzureLiquid.Tests
         public void EnsureDeepParsing()
         {
             // Arrange
-            var instance = new Arrangement();
+            var instance = new Arrangement().Deep;
 
             // Act
             var result = new LiquidParser()
-                .SetContent(instance.Deep.Content, true)
-                .Parse(instance.Deep.Template)
+                .SetContent(instance.Content, true)
+                .Parse(instance.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.Deep.Expected, "The expected result should be returned");
+            result.Should().Be(instance.Expected, "The expected result should be returned");
         }
 
         /// <summary>
@@ -62,17 +74,17 @@ namespace AzureLiquid.Tests
         public void EnsureTemplateParsing()
         {
             // Arrange
-            var instance = new Arrangement();
+            var instance = new Arrangement().SimpleTemplate;
 
             // Act
             var result = new LiquidParser()
-                .SetContent(instance.SimpleTemplate.Content)
-                .Parse(instance.SimpleTemplate.Template)
+                .SetContent(instance.Content)
+                .Parse(instance.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.SimpleTemplate.Expected, "The expected result should be returned");
+            result.Should().Be(instance.Expected, "The expected result should be returned");
         }
 
         /// <summary>
@@ -82,17 +94,36 @@ namespace AzureLiquid.Tests
         public void EnsureJsonBodyTemplateParsing()
         {
             // Arrange
-            var instance = new Arrangement();
+            var instance = new Arrangement().Event;
 
             // Act
             var result = new LiquidParser()
-                .SetContentJson(instance.Event.Content!)
-                .Parse(instance.Event.Template)
+                .SetContentJson(instance.Content!)
+                .Parse(instance.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.Event.Expected, "The expected result should be returned");
+            CompareTextsNoWhitespace(result, instance.Expected!).Should()
+                .BeTrue("The expected result should be returned");
+        }
+
+        [Fact]
+        public void EnsureXmlStringParsing()
+        {
+            // Arrange
+            var instance = new Arrangement().Albums;
+
+            // Act
+            var result = new LiquidParser()
+                .SetContentXml(instance.Content!)
+                .Parse(instance.Template)
+                .Render();
+
+            // Assert
+            result.Should().NotBeEmpty("A result should have been returned");
+            CompareTextsNoWhitespace(result, instance.Expected!).Should()
+                .BeTrue("The expected result should be returned");
         }
     }
 }

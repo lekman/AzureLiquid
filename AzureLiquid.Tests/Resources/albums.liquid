@@ -1,0 +1,8 @@
+﻿{% assign albums = content.CATALOG.CD -%}
+[{%- for album in albums limit:3 %}
+  {
+    "artist": "{{ album.ARTIST }}",
+    "title": "{{ album.TITLE}}"
+  }{% if forloop.last == false %},{% endif %}
+  {%- endfor -%}
+]

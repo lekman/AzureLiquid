@@ -1,7 +1,7 @@
 // <copyright file="LiquidParserTests.Arrangement.cs">
 // Licensed under the open source Apache License, Version 2.0.
 // Project: AzureLiquid.Tests
-// Created: 2022-10-16 16:14
+// Created: 2022-10-18 07:46
 // </copyright>
 
 using AzureLiquid.Tests.Resources;
@@ -42,7 +42,16 @@ namespace AzureLiquid.Tests
                     Template = Templates.EventTemplate,
                     Expected = Templates.EventResult
                 };
+
+                Albums = new TemplateFact<string>
+                {
+                    Content = Templates.AlbumsContent,
+                    Template = Templates.AlbumsTemplate,
+                    Expected = Templates.AlbumsResult
+                };
             }
+
+            public TemplateFact<string> Albums { get; }
 
             public TemplateFact<string> Event { get; }
 

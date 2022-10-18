@@ -1,7 +1,7 @@
 ﻿// <copyright file="LiquidParserException.cs">
 // Licensed under the open source Apache License, Version 2.0.
 // Project: AzureLiquid
-// Created: 2022-10-16 07:46
+// Created: 2022-10-18 07:46
 // </copyright>
 
 using System.Runtime.Serialization;
