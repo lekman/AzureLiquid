@@ -9,6 +9,11 @@ using AzureLiquid.Preview;
 var preview = new PreviewProcess();
 preview.ParseArguments(args);
 
+if (args?.Length == 0)
+{
+    PreviewProcess.WriteHelpOutput();
+}
+
 if (preview.CanRender)
 {
     preview.Render();
@@ -24,7 +29,10 @@ if (preview.CanRender)
 }
 else
 {
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine("  Unable to render as input files are not found or not specified");
-    Console.WriteLine("");
+    if (!string.IsNullOrEmpty(preview.Content) && !string.IsNullOrEmpty(preview.Template))
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("  Unable to render as input files are not found");
+        Console.WriteLine("");
+    }
 }

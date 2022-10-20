@@ -4,16 +4,12 @@
 // Created: 2022-10-18 07:46
 // </copyright>
 
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("AzureLiquid.Tests")]
-
 namespace AzureLiquid.Preview
 {
     /// <summary>
     /// Starts a preview of Liquid template rendering results, and optionally continuously render when source files changes.
     /// </summary>
-    internal class PreviewProcess
+    public class PreviewProcess
     {
         private FileSystemWatcher? _contentWatcher;
 
@@ -35,7 +31,7 @@ namespace AzureLiquid.Preview
         /// <value>
         /// The template.
         /// </value>
-        internal string Template { get; set; }
+        public string Template { get; set; }
 
         /// <summary>
         /// Gets or sets the content.
@@ -43,7 +39,7 @@ namespace AzureLiquid.Preview
         /// <value>
         /// The content.
         /// </value>
-        internal string Content { get; set; }
+        public string Content { get; set; }
 
         /// <summary>
         /// Gets or sets the output.
@@ -51,7 +47,7 @@ namespace AzureLiquid.Preview
         /// <value>
         /// The output.
         /// </value>
-        internal string Output { get; set; }
+        public string Output { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the process should watch for changes to template or content files.
@@ -133,7 +129,7 @@ namespace AzureLiquid.Preview
         /// <summary>
         /// Writes the help output.
         /// </summary>
-        private static void WriteHelpOutput()
+        public static void WriteHelpOutput()
         {
             Console.WriteLine();
             Console.WriteLine("Arguments:");
@@ -168,6 +164,10 @@ namespace AzureLiquid.Preview
         private static bool IsArgMatch(string arg, string key) =>
             string.CompareOrdinal(arg, "--" + key) == 0;
 
+        /// <summary>
+        /// Renders the output using the specified properties of the instance.
+        /// </summary>
+        /// <returns>The output from the template data and content.</returns>
         public string Render()
         {
             if (!CanRender)

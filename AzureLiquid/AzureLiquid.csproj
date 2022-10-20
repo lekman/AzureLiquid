@@ -6,21 +6,31 @@
     <Nullable>enable</Nullable>
     <PackageId>AzureLiquid</PackageId>
     <PackageTags>liquid;dotliquid</PackageTags>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
-    <PackageProjectUrl></PackageProjectUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://lekman.com/blog/2022/10/data-transformations-in-azure-with-liquid/</PackageProjectUrl>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>AzureLiquid.OpenSource.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.2.0</Version>
+    <Version>1.0.5</Version>
     <Authors>Tobias Lekman</Authors>
     <Description>Allows programmatic parsing, unit testing and live preview of Liquid templates, specifically designed for the Azure cloud services.</Description>
     <RepositoryUrl>https://github.com/lekman/AzureLiquid</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <Copyright>Licensed under the Apache License 2.0</Copyright>
+    <Company>Lekman Consulting</Company>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DotLiquid-Net6" Version="1.0.14" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
