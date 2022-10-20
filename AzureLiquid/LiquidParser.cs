@@ -7,7 +7,6 @@
 using System.Dynamic;
 using System.Xml;
 using AzureLiquid.Exceptions;
-using AzureLiquid.Formatting;
 using DotLiquid;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -64,9 +63,10 @@ namespace AzureLiquid
         public LiquidParser SetContentJson(string json)
         {
             var content = "{ \"content\": " + json + " }";
-            dynamic? expando = JsonConvert.DeserializeObject<ExpandoObject>(content, new PreserveCaseDeserializer(),
-                new ExpandoObjectConverter());
-            _data = Hash.FromDictionary(new Dictionary<string, object>(expando));
+            var converter = new ExpandoObjectConverter();
+            var collection = JsonConvert.DeserializeObject<ExpandoObject>(content, converter);
+            _data = Hash.FromDictionary(new Dictionary<string, object>(collection!));
+
             return this;
         }
 
