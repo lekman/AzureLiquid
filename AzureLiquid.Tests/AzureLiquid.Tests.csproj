@@ -8,7 +8,7 @@
 
     <SignAssembly>True</SignAssembly>
 
-    <AssemblyOriginatorKeyFile>X:\Repo\AzureLiquid\Signing\AzureLiquid.OpenSource.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>AzureLiquid.OpenSource.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>

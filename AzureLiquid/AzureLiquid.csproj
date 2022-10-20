@@ -9,7 +9,7 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://lekman.com/blog/2022/10/data-transformations-in-azure-with-liquid/</PackageProjectUrl>
     <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>X:\Repo\AzureLiquid\Signing\AzureLiquid.OpenSource.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>AzureLiquid.OpenSource.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Version>1.0.5</Version>
     <Authors>Tobias Lekman</Authors>
