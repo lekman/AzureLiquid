@@ -5,14 +5,33 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>AzureLiquidPreview</AssemblyName>
+    <AssemblyName>LiquidPreview</AssemblyName>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>AzureLiquid.Preview</PackageId>
+    <Version>1.1.3</Version>
+    <Authors>Tobias Lekman</Authors>
+    <Company>Lekman Consulting</Company>
+    <Description>Allows live preview of Liquid templates, specifically designed for the Azure cloud services.</Description>
+    <RepositoryType>https://github.com/lekman/AzureLiquid</RepositoryType>
+    <PackageTags>git</PackageTags>
+    <Copyright>Licensed under the Apache License 2.0</Copyright>
+    <PackageProjectUrl>https://lekman.com/blog/2022/10/data-transformations-in-azure-with-liquid/</PackageProjectUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>liquidpreview</ToolCommandName>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../AzureLiquid/AzureLiquid.csproj" />
+    <PackageReference Include="AzureLiquid" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="Sample\albums.liquid">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

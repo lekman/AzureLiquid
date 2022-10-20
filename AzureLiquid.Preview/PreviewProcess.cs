@@ -6,7 +6,7 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("AzureLiquid.Tests")]
+[assembly: InternalsVisibleTo("AzureLiquid.Tests, PublicKeyToken=bf4fbb5f90a4bf14")]
 
 namespace AzureLiquid.Preview
 {
@@ -133,7 +133,7 @@ namespace AzureLiquid.Preview
         /// <summary>
         /// Writes the help output.
         /// </summary>
-        private static void WriteHelpOutput()
+        public static void WriteHelpOutput()
         {
             Console.WriteLine();
             Console.WriteLine("Arguments:");

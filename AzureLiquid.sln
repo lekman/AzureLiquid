@@ -7,7 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureLiquid.Tests", "AzureL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureLiquid", "AzureLiquid\AzureLiquid.csproj", "{073A8258-C22F-40D8-9F8A-3819F2A40BBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureLiquid.Preview", "AzureLiquid.Preview\AzureLiquid.Preview.csproj", "{320F47C5-07B5-40CD-8268-1228C4FFDDFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureLiquid.Preview", "AzureLiquid.Preview\AzureLiquid.Preview.csproj", "{320F47C5-07B5-40CD-8268-1228C4FFDDFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Signing", "Signing", "{0EC1483D-EB49-4AED-AB47-DEA36B4EF694}"
+	ProjectSection(SolutionItems) = preProject
+		Signing\AzureLiquid.OpenSource.PublicKey = Signing\AzureLiquid.OpenSource.PublicKey
+		Signing\AzureLiquid.OpenSource.snk = Signing\AzureLiquid.OpenSource.snk
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
