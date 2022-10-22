@@ -36,15 +36,7 @@ Similarly, we can load JSON data either using a string with the **SetContentJson
 
 ## Azure Specific Differences
 
-For example, an Azure LogicApp mapping service uses the content accessor. The LiquidParser exposes a set of SetContent methods used to either set:
-
-- objects (will render down to JSON)
-- JSON string
-- XML string (will parse as XDocument then to JSON)
-
-The object can then be accessed under the 'content' variable in the Liquid template. This is implemented by using the LiquidParser object and using it for unit testing or for live previews/file rendering.
-
-A key within this project is that I created it to be as compatible and usable for Azure implementations as possible. Therefore, it is important to understand how the DotLiquid and Azure implementations of the library differ from Shopify Liquid.
+It is important to understand how the DotLiquid implementations of the library differ from Shopify Liquid.
 
 - Liquid templates follow the [file size limits for maps](https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-limits-and-config#artifact-capacity-limits) in Azure Logic Apps.
 - When using the date filter, DotLiquid supports both Ruby and .NET date format strings (but not both at the same time). By default, it will use [.NET date format strings](<http://msdn.microsoft.com/en-us/library/8kb3ddd4(v=vs.110).aspx>).
