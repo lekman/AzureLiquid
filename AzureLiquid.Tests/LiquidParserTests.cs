@@ -5,6 +5,7 @@
 // </copyright>
 
 using System.Text.RegularExpressions;
+using AzureLiquid.Tests.Resources;
 using FluentAssertions;
 using Xunit;
 
@@ -34,17 +35,17 @@ namespace AzureLiquid.Tests
         public void EnsureBasicParsing()
         {
             // Arrange
-            var instance = new Arrangement();
+            var arrangement = new Arrangement();
 
             // Act
             var result = new LiquidParser()
-                .SetContent(instance.Basic, true)
-                .Parse("{{ content.title }}")
+                .SetContent(arrangement.Basic, true)
+                .Parse("{{ content.title | Prepend: \"Page title - \" }}")
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.Basic.Title, "The expected result should be returned");
+            result.Should().Be("Page title - "+ arrangement.Basic.Title, "The expected result should be returned");
         }
 
         /// <summary>
@@ -54,17 +55,17 @@ namespace AzureLiquid.Tests
         public void EnsureDeepParsing()
         {
             // Arrange
-            var instance = new Arrangement().Deep;
+            var arrangement = new Arrangement().Deep;
 
             // Act
             var result = new LiquidParser()
-                .SetContent(instance.Content, true)
-                .Parse(instance.Template)
+                .SetContent(arrangement.Content, true)
+                .Parse(arrangement.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.Expected, "The expected result should be returned");
+            result.Should().Be(arrangement.Expected, "The expected result should be returned");
         }
 
         /// <summary>
@@ -74,17 +75,17 @@ namespace AzureLiquid.Tests
         public void EnsureTemplateParsing()
         {
             // Arrange
-            var instance = new Arrangement().SimpleTemplate;
+            var arrangement = new Arrangement().SimpleTemplate;
 
             // Act
             var result = new LiquidParser()
-                .SetContent(instance.Content)
-                .Parse(instance.Template)
+                .SetContent(arrangement.Content)
+                .Parse(arrangement.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be(instance.Expected, "The expected result should be returned");
+            result.Should().Be(arrangement.Expected, "The expected result should be returned");
         }
 
         /// <summary>
@@ -94,17 +95,17 @@ namespace AzureLiquid.Tests
         public void EnsureJsonBodyTemplateParsing()
         {
             // Arrange
-            var instance = new Arrangement().Event;
+            var arrangement = new Arrangement().Event;
 
             // Act
             var result = new LiquidParser()
-                .SetContentJson(instance.Content!)
-                .Parse(instance.Template)
+                .SetContentJson(arrangement.Content!)
+                .Parse(arrangement.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            CompareTextsNoWhitespace(result, instance.Expected!).Should()
+            CompareTextsNoWhitespace(result, arrangement.Expected!).Should()
                 .BeTrue("The expected result should be returned");
         }
 
@@ -112,17 +113,40 @@ namespace AzureLiquid.Tests
         public void EnsureXmlStringParsing()
         {
             // Arrange
-            var instance = new Arrangement().Albums;
+            var arrangement = new Arrangement().Albums;
 
             // Act
             var result = new LiquidParser()
-                .SetContentXml(instance.Content!)
-                .Parse(instance.Template)
+                .SetContentXml(arrangement.Content!)
+                .Parse(arrangement.Template)
                 .Render();
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            CompareTextsNoWhitespace(result, instance.Expected!).Should()
+            CompareTextsNoWhitespace(result, arrangement.Expected!).Should()
+                .BeTrue("The expected result should be returned");
+        }
+
+        [Fact]
+        public void EnsureCSharpOperations()
+        {
+            // Arrange
+            var arrangement = new TemplateFact<string>
+            {
+                Content = Templates.Append100Content,
+                Template = Templates.AppendTemplate,
+                Expected = Templates.Append100Expected
+            };
+
+            // Act
+            var result = new LiquidParser()
+                .SetContentJson(arrangement.Content!)
+                .Parse(arrangement.Template)
+                .Render();
+
+            // Assert
+            result.Should().NotBeEmpty("A result should have been returned");
+            CompareTextsNoWhitespace(result, arrangement.Expected!).Should()
                 .BeTrue("The expected result should be returned");
         }
     }

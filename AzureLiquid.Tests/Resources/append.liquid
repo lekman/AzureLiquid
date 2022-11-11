@@ -1,0 +1,12 @@
+﻿{% assign sequence = content.sequence | Plus: 1 -%}
+{% if sequence > 999 -%}
+{% assign sequence = 1 -%}
+{% endif -%}
+{% assign label = sequence | Prepend: '00' -%}
+{% assign len = label | Size -%}
+{% assign start = len | Minus: 3 -%}
+{% assign label = label | Slice:start,len -%}
+{% assign label = content.format | Append: content.storeid | Append: '.' | Append: label -%}
+{
+"output": "{{ label }}"
+}
