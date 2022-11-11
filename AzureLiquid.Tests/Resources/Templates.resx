@@ -127,6 +127,15 @@
   <data name="AlbumsTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>albums.liquid;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="Append100Content" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>append.100.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Append100Expected" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>append.100.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="AppendTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>append.liquid;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="EventContent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>event.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>

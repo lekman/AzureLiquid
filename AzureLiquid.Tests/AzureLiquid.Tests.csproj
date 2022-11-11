@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzureLiquid.Preview\AzureLiquid.Preview.csproj" />
-    <ProjectReference Include="..\AzureLiquid\AzureLiquid.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +51,12 @@
     <None Update="Resources\albums.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\append.100.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\append.100.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\event.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -62,6 +67,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\preview.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\append.liquid">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\simple.liquid">

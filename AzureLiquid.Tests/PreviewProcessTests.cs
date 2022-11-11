@@ -36,6 +36,24 @@ namespace AzureLiquid.Tests
         }
 
         /// <summary>
+        /// Ensures argument parsing works according to the CSharp specification.
+        /// </summary>
+        [Fact]
+        public void EnsurePreviewParsingCSharpArguments()
+        {
+            // Arrange
+            var instance = new Arrangement().ArgumentPreview;
+
+            // Act
+            var result = instance.Render();
+            var fileContent = File.ReadAllText(instance.Output);
+
+            // Assert
+            result.Should().NotBeEmpty("A result should have been returned");
+            result.Should().Be(fileContent, "The expected result should be written to output file");
+        }
+
+        /// <summary>
         /// Contains arranged values used for testing, containing mock instances and expected return values.
         /// </summary>
         private class Arrangement
@@ -51,7 +69,22 @@ namespace AzureLiquid.Tests
                     Content = GetPath("./Resources/event.json"),
                     Output = GetPath("./Resources/preview.txt")
                 };
+
+                ArgumentPreview = new PreviewProcess
+                {
+                    Template = GetPath("./Resources/append.liquid"),
+                    Content = GetPath("./Resources/append.100.json"),
+                    Output = GetPath("./Resources/append.temp.txt")
+                };
             }
+
+            /// <summary>
+            /// Gets the preview process object instance.
+            /// </summary>
+            /// <value>
+            /// The preview process.
+            /// </value>
+            public PreviewProcess ArgumentPreview { get; }
 
             /// <summary>
             /// Gets the preview process object instance.

@@ -8,6 +8,7 @@ using System.Dynamic;
 using System.Xml;
 using AzureLiquid.Exceptions;
 using DotLiquid;
+using DotLiquid.NamingConventions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -30,6 +31,7 @@ namespace AzureLiquid
         /// <returns>The current instance to use for method chaining.</returns>
         public LiquidParser Parse(string? template)
         {
+            Template.NamingConvention = new CSharpNamingConvention();
             _template = Template.Parse(template);
             return this;
         }

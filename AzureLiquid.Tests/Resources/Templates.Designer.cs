@@ -132,6 +132,50 @@ namespace AzureLiquid.Tests.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///&quot;format&quot;: &quot;F4860&quot;,
+        ///&quot;storeid&quot;: &quot;123&quot;,
+        ///&quot;sequence&quot;: 100
+        ///}.
+        /// </summary>
+        internal static string Append100Content {
+            get {
+                return ResourceManager.GetString("Append100Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///&quot;output&quot;: &quot;F4860123.101&quot;
+        ///}.
+        /// </summary>
+        internal static string Append100Expected {
+            get {
+                return ResourceManager.GetString("Append100Expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {% assign sequence = content.sequence | Plus: 1 -%}
+        ///{% if sequence &gt; 999 -%}
+        ///{% assign sequence = 1 -%}
+        ///{% endif -%}
+        ///{% assign label = sequence | Prepend: &apos;00&apos; -%}
+        ///{% assign len = label | Size -%}
+        ///{% assign start = len | Minus: 3 -%}
+        ///{% assign label = label | Slice:start,len -%}
+        ///{% assign label = content.format | Append: content.storeid | Append: &apos;.&apos; | Append: label -%}
+        ///{
+        ///&quot;output&quot;: &quot;{{ label }}&quot;
+        ///}.
+        /// </summary>
+        internal static string AppendTemplate {
+            get {
+                return ResourceManager.GetString("AppendTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
         ///  &quot;contentSource&quot;: &quot;warehouse/uk.ldn.15/availability&quot;,
         ///  &quot;data&quot;: {
         ///    &quot;id&quot;: &quot;IXP89373722/0/10&quot;,
