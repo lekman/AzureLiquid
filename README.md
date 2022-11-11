@@ -44,7 +44,7 @@ It is important to understand how the DotLiquid implementations of the library d
 
 - The standard Replace filter in the DotLiquid implementation uses regular expression (RegEx) matching, while the Shopify implementation uses simple string matching.
 
-- Liquid by default uses Ruby casing for output fields and filters such as {{ some_field | escape }}. DotLiquid uses this same convention by default, but can also be changed to use C# naming convention, in which case output fields and filters would be referenced like so {{ SomeField | Escape }}.
+- Liquid by default uses Ruby casing for output fields and filters such as {{ some_field | escape }}. The Azure implementation of DotLiquid uses C# naming convention, in which case output fields and filters would be referenced like so {{ SomeField | Escape }}.
 
 For further details, see the [Microsoft documentation](https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-enterprise-integration-liquid-transform?tabs=consumption#liquid-template-considerations).
 
