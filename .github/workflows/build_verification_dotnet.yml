@@ -34,6 +34,11 @@ on:
         required: false
         default: 6.0.x
         type: string
+      report_coverage:
+        description: Set to 'true' to generate coverage report. Requires use of secret defined CODECOV_TOKEN.
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   build:
@@ -59,7 +64,7 @@ jobs:
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
 
-      # Build the project or solution. 
+      # Build the project or solution.
       - name: Build and restore
         run: |
           dotnet restore ${{ inputs.project_path }}
@@ -110,6 +115,13 @@ jobs:
           list-tests: "all"
           max-annotations: "50"
           fail-on-error: "true"
+
+      # Code coverage report is generated and uploaded to Codecov
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v3
+        if: ${{ inputs.report_coverage == true }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   create-issue:
     name: Create Issue
