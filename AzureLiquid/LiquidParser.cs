@@ -92,7 +92,6 @@ namespace AzureLiquid
         public LiquidParser SetContentXml(XmlDocument document) =>
             SetContentJson(JsonConvert.SerializeXmlNode(document));
 
-
         /// <summary>
         /// Renders this instance using the parsed template and loaded data content.
         /// </summary>
