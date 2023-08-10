@@ -111,6 +111,27 @@ namespace AzureLiquid.Tests
             }
         }
 
+        [Fact]
+        public void EnsureObjectCreation()
+        {
+            // Arrange
+            var instance = new PreviewProcess
+            {
+                Template = Arrangement.GetPath("./Resources/albums.liquid"),
+                Content = Arrangement.GetPath("./Resources/albums.xml"),
+                Output = Arrangement.GetPath("./Resources/albums.json")
+            };
+
+            // Act
+            instance.Render();
+
+            // Assert
+            instance.Log.Should().BeEmpty("A log should not have been created");
+            instance.Template.Should().NotBeEmpty("The template should be empty");
+            instance.Content.Should().NotBeEmpty("The content should be empty");
+            instance.Output.Should().NotBeEmpty("The output should be empty");
+        }
+
         /// <summary>
         /// Ensure the preview process can use a file watcher.
         /// </summary>
@@ -189,7 +210,7 @@ namespace AzureLiquid.Tests
             /// </summary>
             /// <param name="path">The relative path.</param>
             /// <returns>Full path.</returns>
-            private static string GetPath(string path)
+            public static string GetPath(string path)
             {
                 var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
                 return Path.GetFullPath(path, basePath);

@@ -59,6 +59,7 @@ namespace AzureLiquid.Preview
         /// <value>
         ///   <c>true</c> if should watch; otherwise, <c>false</c>.
         /// </value>
+        [ExcludeFromCodeCoverage]
         internal bool ShouldWatch { get; private set; }
 
         /// <summary>
