@@ -195,6 +195,7 @@ namespace AzureLiquid.Preview
         /// Writes an error line.
         /// </summary>
         /// <param name="error">The error.</param>
+        [ExcludeFromCodeCoverage]
         private static void WriteErrorLine(string error)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -380,6 +381,7 @@ namespace AzureLiquid.Preview
         /// </summary>
         /// <param name="source">The source.</param>
         /// <param name="e">The <see cref="FileSystemEventArgs"/> instance containing the event data.</param>
+        [ExcludeFromCodeCoverage]
         private void OnChanged(object source, FileSystemEventArgs e) => Render();
     }
 }
