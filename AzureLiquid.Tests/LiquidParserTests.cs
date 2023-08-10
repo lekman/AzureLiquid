@@ -45,7 +45,7 @@ namespace AzureLiquid.Tests
 
             // Assert
             result.Should().NotBeEmpty("A result should have been returned");
-            result.Should().Be("Page title - "+ arrangement.Basic.Title, "The expected result should be returned");
+            result.Should().Be("Page title - " + arrangement.Basic.Title, "The expected result should be returned");
         }
 
         /// <summary>

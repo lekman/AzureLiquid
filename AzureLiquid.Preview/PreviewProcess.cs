@@ -4,6 +4,8 @@
 // Created: 2022-10-18 07:46
 // </copyright>
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace AzureLiquid.Preview
 {
     /// <summary>
@@ -14,6 +16,8 @@ namespace AzureLiquid.Preview
         private FileSystemWatcher? _contentWatcher;
 
         private FileSystemWatcher? _templateWatcher;
+
+        private readonly StringWriter _writer = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PreviewProcess"/> class.
@@ -64,6 +68,50 @@ namespace AzureLiquid.Preview
         ///   <c>true</c> if this instance can parse; otherwise, <c>false</c>.
         /// </returns>
         public bool CanRender => File.Exists(Template) && File.Exists(Content) && !string.IsNullOrEmpty(Output);
+
+        /// <summary>
+        /// Start a new instance of the <see cref="PreviewProcess"/> class using the incoming arguments.
+        /// </summary>
+        /// <param name="args">The process arguments</param>
+        /// <returns>A new instance of the <see cref="PreviewProcess"/> class.</returns>
+        [ExcludeFromCodeCoverage]
+        public static PreviewProcess Create(string[] args)
+        {
+            var preview = new PreviewProcess();
+
+            // deepcode ignore XmlInjection: XML is not used by this application, it is passed back to the user, deepcode ignore XXE: <please specify a reason of ignoring this>
+            preview.ParseArguments(args);
+
+            if (args?.Length == 0)
+            {
+                preview.WriteHelpOutput();
+            }
+
+            if (preview.CanRender)
+            {
+                preview.Render();
+
+                if (preview.ShouldWatch)
+                {
+                    preview.StartWatch();
+                    preview.LogMessage("Press any key to exit file watch...");
+                    _ = Console.ReadKey();
+                    preview.StopWatch();
+                    preview.LogMessage("");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(preview.Content) && !string.IsNullOrEmpty(preview.Template))
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    preview.LogMessage("  Unable to render as input files are not found");
+                    preview.LogMessage("");
+                }
+            }
+
+            return preview;
+        }
 
         /// <summary>Parses the arguments and sets process options.</summary>
         /// <param name="args">The arguments. Values are expected to be "--template", "--help", "--content", "--output" or "--watch".</param>
@@ -129,17 +177,17 @@ namespace AzureLiquid.Preview
         /// <summary>
         /// Writes the help output.
         /// </summary>
-        public static void WriteHelpOutput()
+        private void WriteHelpOutput()
         {
-            Console.WriteLine();
-            Console.WriteLine("Arguments:");
-            Console.WriteLine("  --template     : Relative path to the .liquid template source file");
-            Console.WriteLine("  --content      : Relative path to the XML or JSON data source file");
-            Console.WriteLine("  --output       : Relative path to the output result file");
-            Console.WriteLine(
+            LogMessage();
+            LogMessage("Arguments:");
+            LogMessage("  --template     : Relative path to the .liquid template source file");
+            LogMessage("  --content      : Relative path to the XML or JSON data source file");
+            LogMessage("  --output       : Relative path to the output result file");
+            LogMessage(
                 "  --watch        : Switch parameter to enable file watcher and produce output on file update");
-            Console.WriteLine("  --help         : Switch parameter to show this information");
-            Console.WriteLine();
+            LogMessage("  --help         : Switch parameter to show this information");
+            LogMessage();
         }
 
         /// <summary>
@@ -201,8 +249,6 @@ namespace AzureLiquid.Preview
             }
 
             var parser = new LiquidParser();
-            var invalid = false;
-
 
             if (Content.ToLowerInvariant().EndsWith(".json"))
             {
@@ -212,11 +258,8 @@ namespace AzureLiquid.Preview
                 }
                 catch (Exception e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("  Unable to read input JSON file");
-                    Console.WriteLine($"    Info: {e.Message}");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    invalid = true;
+                    LogWarning("  Unable to read input JSON file", e);
+                    return string.Empty;
                 }
             }
 
@@ -228,16 +271,9 @@ namespace AzureLiquid.Preview
                 }
                 catch (Exception ex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("  Unable to read input XML file");
-                    Console.WriteLine("    Info: " + ex.Message);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    LogWarning("  Unable to read input XML file", ex);
+                    return string.Empty;
                 }
-            }
-
-            if (invalid)
-            {
-                return string.Empty;
             }
 
             try
@@ -273,6 +309,12 @@ namespace AzureLiquid.Preview
         }
 
         /// <summary>
+        /// Gets the console output from the last render.
+        /// </summary>
+        /// <returns>The console output.</returns>
+        public string Log => _writer.ToString();
+
+        /// <summary>
         /// Starts watching for changes.
         /// </summary>
         /// <param name="path">The path to the specific file.</param>
@@ -305,7 +347,31 @@ namespace AzureLiquid.Preview
                 _templateWatcher.EnableRaisingEvents = false;
             }
 
-            Console.WriteLine("");
+            LogMessage("");
+        }
+
+        /// <summary>
+        /// Writes the text message to log and console.
+        /// </summary>
+        /// <param name="text">The message.</param>
+        private void LogMessage(string text = "")
+        {
+            Console.WriteLine(text);
+            _writer.WriteLine(text);
+        }
+
+        /// <summary>
+        /// Writes the warning message to log and console.
+        /// </summary>
+        /// <param name="text">The message.</param>
+        /// <param name="e">The exception.</param>
+        [ExcludeFromCodeCoverage]
+        private void LogWarning(string text = "", Exception? e = null)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            LogMessage(text);
+            LogMessage($"    Info: {e?.Message}");
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         /// <summary>

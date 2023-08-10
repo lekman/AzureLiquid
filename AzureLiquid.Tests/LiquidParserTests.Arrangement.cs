@@ -51,16 +51,30 @@ namespace AzureLiquid.Tests
                 };
             }
 
+            /// <summary>
+            /// Gets the albums fact.
+            /// </summary>
             public TemplateFact<string> Albums { get; }
 
+            /// <summary>
+            /// Gets the event fact.
+            /// </summary>
             public TemplateFact<string> Event { get; }
 
+            /// <summary>
+            /// Gets the simple template fact.
+            /// </summary>
             public TemplateFact<BasicObject> SimpleTemplate { get; }
 
+            /// <summary>
+            /// Gets the deep object fact.
+            /// </summary>
             public TemplateFact<DeepObject> Deep { get; }
 
+            /// <summary>
+            /// Gets the basic object fact.
+            /// </summary>
             public BasicObject Basic { get; }
-
 
             /// <summary>
             /// Basic test of an object to serialize and render.
