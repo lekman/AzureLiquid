@@ -14,5 +14,4 @@ jobs:
     secrets: inherit
     with:
       project_path: .
-      use_submodules: false
       run_tests: true

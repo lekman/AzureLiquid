@@ -83,7 +83,9 @@ jobs:
       # Execute the unit tests
       - name: Run unit tests
         if: ${{ inputs.run_tests == true }}
-        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Debug --logger "trx;LogFileName=test-results.trx"
+        run: |
+          dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Debug --logger "trx;LogFileName=test-results.trx"
+          dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
 
       # A custom label can be generated to differentiate between multiple tests in the same action run
       - name: Set test report label
@@ -115,6 +117,20 @@ jobs:
           list-tests: "all"
           max-annotations: "50"
           fail-on-error: "true"
+
+      # Report coverage summary to the user
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: "60 80"
 
       # Code coverage report is generated and uploaded to Codecov
       - name: Upload coverage report
