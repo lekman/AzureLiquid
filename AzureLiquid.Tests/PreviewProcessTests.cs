@@ -82,7 +82,7 @@ namespace AzureLiquid.Tests
         /// <param name="arg5">Fifth argument.</param>
         /// <param name="arg6">Sixth argument.</param>
         /// <param name="arg7">Seventh argument.</param>
-        /// <param name="arg8">Eighth argument.</param> 
+        /// <param name="arg8">Eighth argument.</param>
         [Theory]
         [InlineData(false, "", "", "", "", "", "", "", "")]
         [InlineData(false, "--template", "./Resources/event.liquid", "--content", "./Resources/event.json", "--output", "./Resources/preview.txt", "", "")]
