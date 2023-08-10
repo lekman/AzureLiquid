@@ -5,6 +5,7 @@ on:
     branches: [main]
   push:
     branches: [feature-*]
+  workflow_dispatch:
 
 jobs:
   unit:
