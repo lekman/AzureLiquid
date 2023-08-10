@@ -40,7 +40,6 @@ namespace AzureLiquid.Exceptions
         {
         }
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LiquidParserException"/> class.
         /// </summary>

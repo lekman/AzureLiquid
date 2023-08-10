@@ -3,6 +3,7 @@
 [![Unit Tests](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml)
 [![Code Analysis](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml)
 [![NuGet](https://img.shields.io/nuget/v/AzureLiquid.svg)](https://www.nuget.org/packages/AzureLiquid)
+[![Coverage](https://codecov.io/gh/lekman/AzureLiquid/branch/main/graph/badge.svg?token=6449B7XRCS)](https://codecov.io/gh/lekman/AzureLiquid)
 
 ## Overview
 
@@ -12,7 +13,7 @@ The project was primarily built to aid in developing and testing Liquid template
 
 The Liquid template engine that is used in Microsoft Azure is based on the [DotLiquid](https://github.com/dotliquid/dotliquid) library.
 
-> DotLiquid is a .Net port of the popular Ruby Liquid templating language. It is a separate project that aims to retain the same template syntax as the original, while using .NET coding conventions where possible. For more information about the original Liquid project, see [https://shopify.github.io/liquid/](https://shopify.github.io/liquid/).
+> DotLiquid is a .Net port of the popular Ruby Liquid template language. It is a separate project that aims to retain the same template syntax as the original, while using .NET coding conventions where possible. For more information about the original Liquid project, see [https://shopify.github.io/liquid/](https://shopify.github.io/liquid/).
 
 This library uses my [.NET 6.0 port](https://github.com/lekman/dotliquid-net6) of the same library, to allow for cross-platform compilation and tooling support.
 
@@ -24,7 +25,7 @@ Azure uses a set of predefined feature uses of DotLiquid. For example, an Azure 
 
 The object can then be accessed under the "content" variable in the Liquid template.
 
-```html
+```jinja
 {% assign albums = content.CATALOG.CD -%} [{%- for album in albums limit:3 %}  
 {     "artist": "{{ album.ARTIST }}",     "title": "{{ album.TITLE}}"   }{% if
 forloop.last == false %},{% endif %}   {%- endfor -%} ]

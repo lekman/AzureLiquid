@@ -1,3 +1,19 @@
 {
-    "liquid.format.enable": false
+	"liquid.format.enable": false,
+	"cSpell.words": [
+		"Caml",
+		"cobertura",
+		"coveragereport",
+		"deepcode",
+		"endfor",
+		"Expando",
+		"forloop",
+		"globaltool",
+		"liquidpreview",
+		"Newtonsoft",
+		"reportgenerator",
+		"reporttypes",
+		"targetdir",
+		"Xunit"
+	]
 }
