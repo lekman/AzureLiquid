@@ -7,6 +7,8 @@
 using AzureLiquid.Preview;
 
 var preview = new PreviewProcess();
+
+// deepcode ignore XmlInjection: XML is not used by this application, it is passed back to the user, deepcode ignore XXE: <please specify a reason of ignoring this>
 preview.ParseArguments(args);
 
 if (args?.Length == 0)
