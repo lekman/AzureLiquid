@@ -83,7 +83,7 @@ jobs:
       # Execute the unit tests
       - name: Run unit tests
         if: ${{ inputs.run_tests == true }}
-        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Debug --logger "trx;LogFileName=test-results.trx"
 
       # A custom label can be generated to differentiate between multiple tests in the same action run
       - name: Set test report label
@@ -119,7 +119,7 @@ jobs:
       # Execute coverage for unit tests
       - name: Run coverage tests
         if: ${{ inputs.report_coverage == true }}
-        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
+        run: dotnet test ${{ env.TEST_PROJECT_PATH }} --configuration Debug --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
 
       # Report coverage summary to the user
       - name: Code Coverage Report
