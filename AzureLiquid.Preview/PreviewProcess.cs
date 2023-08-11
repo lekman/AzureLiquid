@@ -13,8 +13,19 @@ namespace AzureLiquid.Preview
     /// </summary>
     public class PreviewProcess
     {
+        /// <summary>
+        /// Handles writing console output to private persisted log.
+        /// </summary>
+        private readonly StringWriter _writer = new();
+
+        /// <summary>
+        /// Detects file system changes to the content file.
+        /// </summary>
         private FileSystemWatcher? _contentWatcher;
 
+        /// <summary>
+        /// Detects file system changes to the template file.
+        /// </summary>
         private FileSystemWatcher? _templateWatcher;
 
         private readonly StringWriter _writer = new();
@@ -44,6 +55,12 @@ namespace AzureLiquid.Preview
         /// The content.
         /// </value>
         public string Content { get; set; }
+
+        /// <summary>
+        /// Gets the console output from the last render.
+        /// </summary>
+        /// <returns>The console output.</returns>
+        public string Log => _writer.ToString();
 
         /// <summary>
         /// Gets or sets the output.

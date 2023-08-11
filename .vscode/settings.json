@@ -15,5 +15,7 @@
 		"reporttypes",
 		"targetdir",
 		"Xunit"
-	]
+	],
+	"editor.formatOnSave": true,
+	"prettier.documentSelectors": ["**/*.cs"]
 }

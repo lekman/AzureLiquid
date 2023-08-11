@@ -74,6 +74,9 @@ dotnet_diagnostic.SA1503.severity = None
 dotnet_diagnostic.SA1636.severity = None
 dotnet_diagnostic.SA1640.severity = None
 
+# Allow new() constructor simplification
+dotnet_diagnostic.SA1000.severity = None
+
 ##
 ## SonarAnalyzers.CSharp
 ##
