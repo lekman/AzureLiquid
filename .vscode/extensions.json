@@ -1,6 +1,5 @@
 {
 	"recommendations": [
-		"ms-dotnettools.csharp",
 		"streetsidesoftware.code-spell-checker",
 		"davidanson.vscode-markdownlint",
 		"josefpihrt-vscode.roslynator",
