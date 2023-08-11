@@ -28,8 +28,6 @@ namespace AzureLiquid.Preview
         /// </summary>
         private FileSystemWatcher? _templateWatcher;
 
-        private readonly StringWriter _writer = new();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PreviewProcess"/> class.
         /// </summary>
@@ -326,12 +324,6 @@ namespace AzureLiquid.Preview
                 _templateWatcher!.EnableRaisingEvents = true;
             }
         }
-
-        /// <summary>
-        /// Gets the console output from the last render.
-        /// </summary>
-        /// <returns>The console output.</returns>
-        public string Log => _writer.ToString();
 
         /// <summary>
         /// Starts watching for changes.
