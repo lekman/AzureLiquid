@@ -1,42 +1,55 @@
-name: "Code Analysis"
+name: Code Scanning
+
+# Ensure static security analysis is performed
+# Automatically runs each night
+# Runs when a pull request is opened on the feature branch
+# Runs on pull request to the main branch
+# Runs after pull request is merged to the main branch
 
 on:
-    push:
-        branches: [master]
-    pull_request:
-        # The branches below must be a subset of the branches above
-        branches: [master]
-    #schedule:
-    #    - cron: "40 1 * * 4"
-    workflow_dispatch: # Allow on demand execution
+  workflow_dispatch: # on demand
+  schedule:
+    - cron: "0 0 * * *" # every day at midnight on 'main'
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
 
 jobs:
-    analyze:
-        name: Build Verification
-        runs-on: ubuntu-latest
-        permissions:
-            actions: read
-            contents: read
-            security-events: write
+  analyze:
+    name: Analyze
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
-        strategy:
-            fail-fast: false
-            matrix:
-                language: ["csharp"]
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["csharp"]
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            # Initializes the CodeQL tools for scanning.
-            - name: Initialize CodeQL
-              uses: github/codeql-action/init@v2
-              with:
-                  languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          queries: security-and-quality
 
-            # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-            - name: Autobuild
-              uses: github/codeql-action/autobuild@v2
+      - name: Build solutions
+        shell: pwsh
+        run: |
+          $solutions = Get-ChildItem -Path . -Filter '*.sln' -Recurse
+          foreach ($solution in $solutions) {
+            dotnet build $solution.FullName
+          }
 
-            - name: Perform CodeQL Analysis
-              uses: github/codeql-action/analyze@v2
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:csharp"
