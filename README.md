@@ -74,7 +74,7 @@ result.Should().NotBeEmpty("A result should have been returned");
 result.Should().Be(myObj.Title, "The expected result should be returned");
 ```
 
-[See the full example](https://github.com/lekman/Liquid.Parser/blob/main/Liquid.Tests/LiquidParserTests.cs#L22)
+[See the full example](https://github.com/lekman/AzureLiquid/blob/feature/nuget-release/AzureLiquid.Tests/LiquidParserTests.cs)
 
 Another example can be made where we use a string body to transform the data.
 
