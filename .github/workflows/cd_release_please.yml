@@ -1,0 +1,43 @@
+name: "Release Please"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.cs"
+      - "**/*.cs*"
+      - ".release-please-manifest.json"
+      - "release-please-config.json"
+
+jobs:
+  release:
+    name: Release Please
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "16"
+
+      - name: Run release-please
+        uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+    #   - name: Setup .NET
+    #     uses: actions/setup-dotnet@v4
+    #     with:
+    #       dotnet-version: "8.0.x"
+
+    #   - name: Bump versions and publish
+    #     working-directory: ./scripts/
+    #     run: bash release.sh
+    #     env:
+    #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #       NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}
