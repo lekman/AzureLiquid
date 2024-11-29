@@ -1,7 +1,7 @@
 # Azure Liquid
 
 [![Unit Tests](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml)
-[![Code Scanning](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml)
+[![Code Scanning](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml)
 [![Coverage](https://codecov.io/gh/lekman/AzureLiquid/branch/main/graph/badge.svg?token=6449B7XRCS)](https://codecov.io/gh/lekman/AzureLiquid)
 
 ## Packages
