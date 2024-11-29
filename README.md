@@ -21,7 +21,7 @@ The Liquid template engine that is used in Microsoft Azure is based on the [DotL
 
 > DotLiquid is a .Net port of the popular Ruby Liquid template language. It is a separate project that aims to retain the same template syntax as the original, while using .NET coding conventions where possible. For more information about the original Liquid project, see [https://shopify.github.io/liquid/](https://shopify.github.io/liquid/).
 
-This library uses my [.NET 6.0 port](https://github.com/lekman/dotliquid-net6) of the same library, to allow for cross-platform compilation and tooling support.
+This library uses my [.NET port](https://github.com/lekman/dotliquid-net6) of the same library, to allow for cross-platform compilation and tooling support.
 
 Azure uses a set of predefined feature uses of DotLiquid. For example, an Azure Logic App mapping service uses the "content" accessor for any data submitted using a workflow action. The [LiquidParser](https://github.com/lekman/AzureLiquid/blob/main/AzureLiquid/LiquidParser.cs") class exposes a set of SetContent methods used to either set:
 
