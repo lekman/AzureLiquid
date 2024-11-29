@@ -2,6 +2,7 @@
 // Licensed under the open source Apache License, Version 2.0.
 // Project: AzureLiquid.Preview
 // Created: 2022-10-18 07:46
+// Last Modified: 2022-11-29 14:52
 // </copyright>
 
 using System.Diagnostics.CodeAnalysis;
@@ -69,7 +70,7 @@ namespace AzureLiquid.Preview
         public string Output { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the process should watch for changes to template or content files.
+        /// Gets a value indicating whether the process should watch for changes to template or content files.
         /// </summary>
         /// <value>
         ///   <c>true</c> if should watch; otherwise, <c>false</c>.
@@ -78,7 +79,7 @@ namespace AzureLiquid.Preview
         internal bool ShouldWatch { get; private set; }
 
         /// <summary>
-        /// Determines whether this instance can parse the inputs and render the output.
+        /// Gets a value indicating whether this instance can parse the inputs and render the output.
         /// </summary>
         /// <returns>
         ///   <c>true</c> if this instance can parse; otherwise, <c>false</c>.
@@ -97,33 +98,14 @@ namespace AzureLiquid.Preview
 
             // deepcode ignore XmlInjection: XML is not used by this application, it is passed back to the user, deepcode ignore XXE: <please specify a reason of ignoring this>
             preview.ParseArguments(args);
-
-            if (args?.Length == 0)
-            {
-                preview.WriteHelpOutput();
-            }
-
+            HandleNoArgumentsPassed(args, preview);
             if (preview.CanRender)
             {
-                preview.Render();
-
-                if (preview.ShouldWatch)
-                {
-                    preview.StartWatch();
-                    preview.LogMessage("Press any key to exit file watch...");
-                    _ = Console.ReadKey();
-                    preview.StopWatch();
-                    preview.LogMessage("");
-                }
+                RenderAndWatch(preview);
             }
             else
             {
-                if (!string.IsNullOrEmpty(preview.Content) && !string.IsNullOrEmpty(preview.Template))
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    preview.LogMessage("  Unable to render as input files are not found");
-                    preview.LogMessage("");
-                }
+                LogMissingFiles(preview);
             }
 
             return preview;
@@ -137,46 +119,11 @@ namespace AzureLiquid.Preview
             {
                 var arg = args[index];
                 var path = Directory.GetCurrentDirectory();
+                ParseTemplate(args, index, arg, path);
+                ParseContent(args, index, arg, path);
+                ParseOutputResults(args, index, arg, path);
 
-                // Parse incoming template file
-                if (IsArgMatch(arg, "template") && index - 1 < args.Length)
-                {
-                    try
-                    {
-                        Template = Path.GetFullPath(args[index + 1], path);
-                    }
-                    catch
-                    {
-                        WriteErrorLine($"Invalid template path: {args[index + 1]}");
-                    }
-                }
-
-                // Parse incoming content file
-                if (IsArgMatch(arg, "content") && index - 1 < args.Length)
-                {
-                    try
-                    {
-                        Content = Path.GetFullPath(args[index + 1], path);
-                    }
-                    catch
-                    {
-                        WriteErrorLine($"Invalid content path: {args[index + 1]}");
-                    }
-                }
-
-                // Parse outgoing results file
-                if (IsArgMatch(arg, "output") && index - 1 < args.Length)
-                {
-                    try
-                    {
-                        Output = Path.GetFullPath(args[index + 1], path);
-                    }
-                    catch
-                    {
-                        WriteErrorLine($"Invalid output path: {args[index + 1]}");
-                    }
-                }
-
+                // Switch watch param if needed
                 if (IsArgMatch(arg, "watch"))
                 {
                     ShouldWatch = true;
@@ -187,6 +134,118 @@ namespace AzureLiquid.Preview
                 {
                     WriteHelpOutput();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Parses the output results file path if specified.
+        /// </summary>
+        /// <param name="args">The passed command arguments.</param>
+        /// <param name="index">The parameter index.</param>
+        /// <param name="arg">The current argument.</param>
+        /// <param name="path">The target path.</param>
+        private void ParseOutputResults(string[] args, int index, string arg, string path)
+        {
+            if (IsArgMatch(arg, "output") && index - 1 < args.Length)
+            {
+                try
+                {
+                    Output = Path.GetFullPath(args[index + 1], path);
+                }
+                catch
+                {
+                    WriteErrorLine($"Invalid output path: {args[index + 1]}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parses the incoming content file path if specified.
+        /// </summary>
+        /// <param name="args">The passed command arguments.</param>
+        /// <param name="index">The parameter index.</param>
+        /// <param name="arg">The current argument.</param>
+        /// <param name="path">The target path.</param>
+        private void ParseContent(string[] args, int index, string arg, string path)
+        {
+            if (IsArgMatch(arg, "content") && index - 1 < args.Length)
+            {
+                try
+                {
+                    Content = Path.GetFullPath(args[index + 1], path);
+                }
+                catch
+                {
+                    WriteErrorLine($"Invalid content path: {args[index + 1]}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parses the incoming template file path if specified.
+        /// </summary>
+        /// <param name="args">The passed command arguments.</param>
+        /// <param name="index">The parameter index.</param>
+        /// <param name="arg">The current argument.</param>
+        /// <param name="path">The target path.</param>
+        private void ParseTemplate(string[] args, int index, string arg, string path)
+        {
+            // Parse incoming template file
+            if (IsArgMatch(arg, "template") && index - 1 < args.Length)
+            {
+                try
+                {
+                    Template = Path.GetFullPath(args[index + 1], path);
+                }
+                catch
+                {
+                    WriteErrorLine($"Invalid template path: {args[index + 1]}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Renders the output and watches for changes if specified.
+        /// </summary>
+        /// <param name="preview">The current preview process.</param>
+        private static void RenderAndWatch(PreviewProcess preview)
+        {
+            preview.Render();
+
+            if (preview.ShouldWatch)
+            {
+                preview.StartWatch();
+                preview.LogMessage("Press any key to exit file watch...");
+                _ = Console.ReadKey();
+                preview.StopWatch();
+                preview.LogMessage("");
+            }
+        }
+
+        /// <summary>
+        /// Logs the missing files if found.
+        /// </summary>
+        /// <param name="preview">The current preview process.</param>
+        private static void LogMissingFiles(PreviewProcess preview)
+        {
+            if (!string.IsNullOrEmpty(preview.Content) && !string.IsNullOrEmpty(preview.Template))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                preview.LogMessage("  Unable to render as input files are not found");
+                preview.LogMessage("");
+            }
+        }
+
+        /// <summary>
+        /// Handles the scenario where no arguments are passed to the application.
+        /// </summary>
+        /// <param name="args">The array of arguments passed to the application.</param>
+        /// <param name="preview">The instance of <see cref="PreviewProcess"/> to handle the output.</param>
+        private static void HandleNoArgumentsPassed(string[] args, PreviewProcess preview)
+        {
+            if (args?.Length == 0)
+            {
+                preview.WriteHelpOutput();
             }
         }
 
