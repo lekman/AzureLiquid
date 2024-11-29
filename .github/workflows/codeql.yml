@@ -1,0 +1,60 @@
+name: Code Scanning
+
+# Ensure static security analysis is performed
+# Automatically runs each night
+# Runs when a pull request is opened on the feature branch
+# Runs on pull request to the main branch
+# Runs after pull request is merged to the main branch
+
+on:
+  workflow_dispatch: # on demand
+  schedule:
+    - cron: "0 0 * * *" # every day at midnight on 'main'
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["csharp"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          queries: security-and-quality
+
+      - name: Build solutions
+        shell: pwsh
+        run: |
+          $solutions = Get-ChildItem -Path . -Filter '*.sln' -Recurse
+          foreach ($solution in $solutions) {
+            dotnet build $solution.FullName
+          }
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:csharp"
