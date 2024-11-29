@@ -1,9 +1,15 @@
 # Azure Liquid
 
 [![Unit Tests](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml)
-[![Code Analysis](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml)
-[![NuGet](https://img.shields.io/nuget/v/AzureLiquid.svg)](https://www.nuget.org/packages/AzureLiquid)
+[![Code Scanning](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml)
 [![Coverage](https://codecov.io/gh/lekman/AzureLiquid/branch/main/graph/badge.svg?token=6449B7XRCS)](https://codecov.io/gh/lekman/AzureLiquid)
+
+## Packages
+
+| Package | Latest Version |
+| ------- | -------------- |
+| AzureLiquid | [![NuGet](https://img.shields.io/nuget/v/AzureLiquid.svg)](https://www.nuget.org/packages/AzureLiquid) |
+| AzureLiquid.Preview | [![NuGet](https://img.shields.io/nuget/v/AzureLiquid.Preview.svg)](https://www.nuget.org/packages/AzureLiquid.Preview) |
 
 ## Overview
 
@@ -15,7 +21,7 @@ The Liquid template engine that is used in Microsoft Azure is based on the [DotL
 
 > DotLiquid is a .Net port of the popular Ruby Liquid template language. It is a separate project that aims to retain the same template syntax as the original, while using .NET coding conventions where possible. For more information about the original Liquid project, see [https://shopify.github.io/liquid/](https://shopify.github.io/liquid/).
 
-This library uses my [.NET 6.0 port](https://github.com/lekman/dotliquid-net6) of the same library, to allow for cross-platform compilation and tooling support.
+This library uses my [.NET port](https://github.com/lekman/dotliquid-net6) of the same library, to allow for cross-platform compilation and tooling support.
 
 Azure uses a set of predefined feature uses of DotLiquid. For example, an Azure Logic App mapping service uses the "content" accessor for any data submitted using a workflow action. The [LiquidParser](https://github.com/lekman/AzureLiquid/blob/main/AzureLiquid/LiquidParser.cs") class exposes a set of SetContent methods used to either set:
 
@@ -68,7 +74,7 @@ result.Should().NotBeEmpty("A result should have been returned");
 result.Should().Be(myObj.Title, "The expected result should be returned");
 ```
 
-[See the full example](https://github.com/lekman/Liquid.Parser/blob/main/Liquid.Tests/LiquidParserTests.cs#L22)
+[See the full example](https://github.com/lekman/AzureLiquid/blob/feature/nuget-release/AzureLiquid.Tests/LiquidParserTests.cs)
 
 Another example can be made where we use a string body to transform the data.
 
