@@ -445,7 +445,7 @@ namespace AzureLiquid.Preview
         }
 
         /// <summary>
-        /// Called when a source file has changed and calls to process output using that input.
+        /// Event is called when a source file has changed and calls to process output using that input.
         /// </summary>
         /// <param name="source">The source.</param>
         /// <param name="e">The <see cref="FileSystemEventArgs"/> instance containing the event data.</param>
