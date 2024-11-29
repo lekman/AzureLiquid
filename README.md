@@ -1,9 +1,11 @@
 # Azure Liquid
 
 [![Unit Tests](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml)
-[![Code Analysis](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql-analysis.yml)
-[![NuGet](https://img.shields.io/nuget/v/AzureLiquid.svg)](https://www.nuget.org/packages/AzureLiquid)
+[![CodeQL](https://github.com/lekman/AzureLiquid/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/github-code-scanning/codeql)
 [![Coverage](https://codecov.io/gh/lekman/AzureLiquid/branch/main/graph/badge.svg?token=6449B7XRCS)](https://codecov.io/gh/lekman/AzureLiquid)
+
+AzureLiquid: [![NuGet](https://img.shields.io/nuget/v/AzureLiquid.svg)](https://www.nuget.org/packages/AzureLiquid)
+AzureLiquid.Preview [![NuGet](https://img.shields.io/nuget/v/AzureLiquid.Preview.svg)](https://www.nuget.org/packages/AzureLiquid.Preview)
 
 ## Overview
 
