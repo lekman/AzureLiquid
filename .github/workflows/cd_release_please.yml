@@ -41,9 +41,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   bump-versions:
-    name: Bump Versions
+    name: Set Version
     # Only run on pull requests or on feature branches
-    if: github.ref == 'refs/heads/main'
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
