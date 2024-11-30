@@ -12,6 +12,7 @@ on:
       - "**/*.cs*"
       - ".release-please-manifest.json"
       - "release-please-config.json"
+      - ".github/workflows/cd_release_please.yml"
   pull_request:
     # Only run during a PR if the release-please manifest has changed,
     # meaning that versions are attempting to be updated.
