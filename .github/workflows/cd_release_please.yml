@@ -3,6 +3,8 @@ name: "Release Please"
 on:
   workflow_dispatch:
   push:
+    # Run on main branch changes and let release-please create
+    # PRs for version bumps and new releases
     branches:
       - main
     paths:
@@ -10,10 +12,18 @@ on:
       - "**/*.cs*"
       - ".release-please-manifest.json"
       - "release-please-config.json"
+  pull_request:
+    # Only run during a PR if the release-please manifest has changed,
+    # meaning that versions are attempting to be updated.
+    types: [opened, synchronize, reopened]
+    paths:
+      - ".release-please-manifest.json"
 
 jobs:
-  release:
+  release-please:
     name: Release Please
+    # Only run on main, after merge is completed
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -30,14 +40,18 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-    #   - name: Setup .NET
-    #     uses: actions/setup-dotnet@v4
-    #     with:
-    #       dotnet-version: "8.0.x"
-
-    #   - name: Bump versions and publish
-    #     working-directory: ./scripts/
-    #     run: bash release.sh
-    #     env:
-    #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #       NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}
+  bump-versions:
+    name: Set Version
+    # Only run on pull requests or on feature branches
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bump version
+        uses: lekman/release-please-dotnet@feature/prereq
+        with:
+          manifest: ".release-please-manifest.json"
+          branch: ${{ github.head_ref }}
