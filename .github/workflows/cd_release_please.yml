@@ -51,7 +51,35 @@ jobs:
         with:
           fetch-depth: 0
       - name: Bump version
-        uses: lekman/release-please-dotnet@feature/prereq
+        uses: lekman/release-please-dotnet@v1
         with:
           manifest: ".release-please-manifest.json"
           branch: ${{ github.head_ref }}
+
+  publish:
+    name: Publish
+    # Only run on main, after merge is completed
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build
+
+      - name: Publish
+        run: dotnet publish -c Release -o ${{ github.workspace }}/publish
+
+      - name: Publish to Nuget
+        run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
