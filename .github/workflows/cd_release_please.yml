@@ -50,19 +50,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Bumpy bump
+      - name: Bump version
         uses: lekman/release-please-dotnet@feature/prereq
         with:
           manifest: ".release-please-manifest.json"
-
-    #   - name: Setup .NET
-    #     uses: actions/setup-dotnet@v4
-    #     with:
-    #       dotnet-version: "8.0.x"
-
-    #   - name: Bump versions and publish
-    #     working-directory: ./scripts/
-    #     run: bash release.sh
-    #     env:
-    #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #       NUGET_API_KEY: ${{ secrets.NUGET_TOKEN }}
+          branch: ${{ github.head_ref }}
