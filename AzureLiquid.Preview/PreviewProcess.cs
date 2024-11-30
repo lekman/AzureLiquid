@@ -364,6 +364,8 @@ namespace AzureLiquid.Preview
                 WriteErrorLine($"Error: {e.Message}");
                 return string.Empty;
             }
+
+            // TODO: Refactor this method
         }
 
         /// <summary>

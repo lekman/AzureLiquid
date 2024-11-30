@@ -28,6 +28,7 @@ namespace AzureLiquid.Exceptions
         /// <param name="message">The message that describes the error.</param>
         public LiquidParserException(string message) : base(message)
         {
+            // Pass to base class
         }
 
         /// <summary>
@@ -38,6 +39,7 @@ namespace AzureLiquid.Exceptions
         public LiquidParserException(string message, Exception innerException)
             : base(message, innerException)
         {
+            // Pass to base class
         }
     }
 }
