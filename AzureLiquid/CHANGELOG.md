@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/lekman/AzureLiquid/compare/AzureLiquid@v1.1.0...AzureLiquid@v1.2.0) (2024-11-30)
+
+
+### Features
+
+* Ensure .NET 9 compiler, update refs ([4b5f1ba](https://github.com/lekman/AzureLiquid/commit/4b5f1ba481e2039ae4ec8e4d45c5ad7930c15edb))
+* Refactoring and closing of warnings ([713545b](https://github.com/lekman/AzureLiquid/commit/713545b286959dceede3d227146a6419724d3eac))
+
 ## [1.1.0](https://github.com/lekman/AzureLiquid/compare/AzureLiquid@v1.0.0...AzureLiquid@v1.1.0) (2024-11-30)
 
 
