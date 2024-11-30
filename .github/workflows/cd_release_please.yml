@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Bump versions
+      - name: Bump .NET package versions
         uses: lekman/release-please-dotnet@v1
         with:
           manifest: ".release-please-manifest.json"
