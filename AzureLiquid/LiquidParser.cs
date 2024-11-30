@@ -105,7 +105,6 @@ namespace AzureLiquid
         /// <summary>
         /// Guards rendering for bad inputs.
         /// </summary>
-        /// <returns></returns>
         /// <exception cref="LiquidParserException">
         /// No data loaded. Call the SetContent* methods before calling Render.
         /// or
