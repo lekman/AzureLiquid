@@ -9,6 +9,7 @@ on:
       - "**/*.cs"
       - "**/*.csproj"
       - "**/*.sln"
+      - ".github/workflows/cd_release_please.yml"
       - ".release-please-manifest.json"
       - "release-please-config.json"
 
