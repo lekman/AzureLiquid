@@ -39,25 +39,10 @@ jobs:
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check if manifest has changed
-        id: check_changes
-        run: |
-          if git diff --name-only HEAD^ HEAD | grep -q '.release-please-manifest.json'; then
-            echo "File changed"
-            echo "file_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "File not changed"
-            echo "file_changed=false" >> $GITHUB_OUTPUT
-          fi
+      - uses: actions/checkout@v4
 
       - name: Bump versions
         uses: lekman/release-please-dotnet@v1
-        if: steps.check_changes.outputs.file_changed == 'true'
         with:
           manifest: ".release-please-manifest.json"
           branch: ${{ github.head_ref }}
