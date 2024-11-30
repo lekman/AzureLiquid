@@ -1,4 +1,4 @@
-name: "CD: Release and Publish"
+name: "Release Please"
 
 on:
   workflow_dispatch:
@@ -12,13 +12,10 @@ on:
       - "**/*.cs*"
       - ".release-please-manifest.json"
       - "release-please-config.json"
-      - ".github/workflows/cd_release_please.yml"
   pull_request:
     # Only run during a PR if the release-please manifest has changed,
     # meaning that versions are attempting to be updated.
     types: [opened, synchronize, reopened]
-    paths:
-      - ".release-please-manifest.json"
 
 jobs:
   release-please:
@@ -43,16 +40,29 @@ jobs:
 
   bump-versions:
     name: Set Version
-    # Only run on pull requests or on feature branches
-    if: github.ref != 'refs/heads/main'
+    # Only run on pull requests
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Bump version
+
+      - name: Check if manifest has changed
+        id: check_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep -q '.release-please-manifest.json'; then
+            echo "File changed"
+            echo "file_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "File not changed"
+            echo "file_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Bump versions
         uses: lekman/release-please-dotnet@v1
+        if: steps.check_changes.outputs.file_changed == 'true'
         with:
           manifest: ".release-please-manifest.json"
           branch: ${{ github.head_ref }}
@@ -80,7 +90,7 @@ jobs:
         run: dotnet build
 
       - name: Publish
-        run: dotnet publish -c Release -o ${{ github.workspace }}/publish
+        run: dotnet publish -c Release
 
       - name: Publish to Nuget
         run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
