@@ -10,7 +10,7 @@
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>AzureLiquid.OpenSource.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Tobias Lekman</Authors>
     <Description>Allows programmatic parsing, unit testing and live preview of Liquid templates, specifically designed for the Azure cloud services.</Description>
     <RepositoryUrl>https://github.com/lekman/AzureLiquid</RepositoryUrl>
