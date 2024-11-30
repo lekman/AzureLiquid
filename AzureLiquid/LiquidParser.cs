@@ -67,6 +67,7 @@ namespace AzureLiquid
             var content = "{ \"content\": " + json + " }";
             var converter = new ExpandoObjectConverter();
             var collection = JsonConvert.DeserializeObject<ExpandoObject>(content, converter);
+
             _data = Hash.FromDictionary(new Dictionary<string, object>(collection!));
 
             return this;
