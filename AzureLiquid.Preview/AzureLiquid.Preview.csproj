@@ -8,7 +8,7 @@
     <AssemblyOriginatorKeyFile>AzureLiquid.OpenSource.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>AzureLiquid.Preview</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Tobias Lekman</Authors>
     <Company>Lekman Consulting</Company>
     <Description>Allows live preview of Liquid templates, specifically designed for the Azure cloud services.</Description>
