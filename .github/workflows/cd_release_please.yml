@@ -3,19 +3,14 @@ name: "Release Please"
 on:
   workflow_dispatch:
   push:
-    # Run on main branch changes and let release-please create
+    # Run on changes and let release-please create
     # PRs for version bumps and new releases
-    branches:
-      - main
     paths:
       - "**/*.cs"
-      - "**/*.cs*"
+      - "**/*.csproj"
+      - "**/*.sln"
       - ".release-please-manifest.json"
       - "release-please-config.json"
-  pull_request:
-    # Only run during a PR if the release-please manifest has changed,
-    # meaning that versions are attempting to be updated.
-    types: [opened, synchronize, reopened]
 
 jobs:
   release-please:
@@ -40,8 +35,7 @@ jobs:
 
   bump-versions:
     name: Set Version
-    # Only run on pull requests
-    if: github.event_name == 'pull_request'
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
