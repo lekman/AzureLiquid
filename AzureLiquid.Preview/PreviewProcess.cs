@@ -1,457 +1,462 @@
 ﻿// <copyright file="PreviewProcess.cs">
 // Licensed under the open source Apache License, Version 2.0.
-// Project: AzureLiquid.Preview
-// Created: 2022-10-18 07:46
-// Last Modified: 2022-11-29 14:52
 // </copyright>
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace AzureLiquid.Preview
+namespace AzureLiquid.Preview;
+
+/// <summary>
+/// Starts a preview of Liquid template rendering results, and optionally continuously render when source files
+/// changes.
+/// </summary>
+public class PreviewProcess
 {
     /// <summary>
-    /// Starts a preview of Liquid template rendering results, and optionally continuously render when source files changes.
+    /// Handles writing console output to private persisted log.
     /// </summary>
-    public class PreviewProcess
+    private readonly StringWriter _writer = new();
+
+    /// <summary>
+    /// Detects file system changes to the content file.
+    /// </summary>
+    private FileSystemWatcher? _contentWatcher;
+
+    /// <summary>
+    /// Detects file system changes to the template file.
+    /// </summary>
+    private FileSystemWatcher? _templateWatcher;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PreviewProcess" /> class.
+    /// </summary>
+    public PreviewProcess()
     {
-        /// <summary>
-        /// Handles writing console output to private persisted log.
-        /// </summary>
-        private readonly StringWriter _writer = new();
+        Template = string.Empty;
+        Content = string.Empty;
+        Output = "./preview.txt";
+    }
 
-        /// <summary>
-        /// Detects file system changes to the content file.
-        /// </summary>
-        private FileSystemWatcher? _contentWatcher;
+    /// <summary>
+    /// Gets or sets the template.
+    /// </summary>
+    /// <value>
+    /// The template.
+    /// </value>
+    public string Template { get; set; }
 
-        /// <summary>
-        /// Detects file system changes to the template file.
-        /// </summary>
-        private FileSystemWatcher? _templateWatcher;
+    /// <summary>
+    /// Gets or sets the content.
+    /// </summary>
+    /// <value>
+    /// The content.
+    /// </value>
+    public string Content { get; set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PreviewProcess"/> class.
-        /// </summary>
-        public PreviewProcess()
+    /// <summary>
+    /// Gets the console output from the last render.
+    /// </summary>
+    /// <returns>The console output.</returns>
+    public string Log => _writer.ToString();
+
+    /// <summary>
+    /// Gets or sets the output.
+    /// </summary>
+    /// <value>
+    /// The output.
+    /// </value>
+    public string Output { get; set; }
+
+    /// <summary>
+    /// Gets a value indicating whether the process should watch for changes to template or content files.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if should watch; otherwise, <c>false</c>.
+    /// </value>
+    [ExcludeFromCodeCoverage]
+    internal bool ShouldWatch { get; private set; }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance can parse the inputs and render the output.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if this instance can parse; otherwise, <c>false</c>.
+    /// </returns>
+    public bool CanRender => File.Exists(Template) && File.Exists(Content) && !string.IsNullOrEmpty(Output);
+
+    /// <summary>
+    /// Start a new instance of the <see cref="PreviewProcess" /> class using the incoming arguments.
+    /// </summary>
+    /// <param name="args">The process arguments</param>
+    /// <returns>A new instance of the <see cref="PreviewProcess" /> class.</returns>
+    [ExcludeFromCodeCoverage]
+    public static PreviewProcess Create(string[] args)
+    {
+        var preview = new PreviewProcess();
+
+        // deepcode ignore XmlInjection: XML is not used by this application, it is passed back to the user, deepcode ignore XXE: <please specify a reason of ignoring this>
+        preview.ParseArguments(args);
+        HandleNoArgumentsPassed(args, preview);
+        if (preview.CanRender)
         {
-            Template = string.Empty;
-            Content = string.Empty;
-            Output = "./preview.txt";
+            RenderAndWatch(preview);
+        }
+        else
+        {
+            LogMissingFiles(preview);
         }
 
-        /// <summary>
-        /// Gets or sets the template.
-        /// </summary>
-        /// <value>
-        /// The template.
-        /// </value>
-        public string Template { get; set; }
+        return preview;
+    }
 
-        /// <summary>
-        /// Gets or sets the content.
-        /// </summary>
-        /// <value>
-        /// The content.
-        /// </value>
-        public string Content { get; set; }
-
-        /// <summary>
-        /// Gets the console output from the last render.
-        /// </summary>
-        /// <returns>The console output.</returns>
-        public string Log => _writer.ToString();
-
-        /// <summary>
-        /// Gets or sets the output.
-        /// </summary>
-        /// <value>
-        /// The output.
-        /// </value>
-        public string Output { get; set; }
-
-        /// <summary>
-        /// Gets a value indicating whether the process should watch for changes to template or content files.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if should watch; otherwise, <c>false</c>.
-        /// </value>
-        [ExcludeFromCodeCoverage]
-        internal bool ShouldWatch { get; private set; }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance can parse the inputs and render the output.
-        /// </summary>
-        /// <returns>
-        ///   <c>true</c> if this instance can parse; otherwise, <c>false</c>.
-        /// </returns>
-        public bool CanRender => File.Exists(Template) && File.Exists(Content) && !string.IsNullOrEmpty(Output);
-
-        /// <summary>
-        /// Start a new instance of the <see cref="PreviewProcess"/> class using the incoming arguments.
-        /// </summary>
-        /// <param name="args">The process arguments</param>
-        /// <returns>A new instance of the <see cref="PreviewProcess"/> class.</returns>
-        [ExcludeFromCodeCoverage]
-        public static PreviewProcess Create(string[] args)
+    /// <summary>Parses the arguments and sets process options.</summary>
+    /// <param name="args">
+    /// The arguments. Values are expected to be "--template", "--help", "--content", "--output" or
+    /// "--watch".
+    /// </param>
+    internal void ParseArguments(string[] args)
+    {
+        for (var index = 0; index < args.Length; index++)
         {
-            var preview = new PreviewProcess();
+            var arg = args[index];
+            var path = Directory.GetCurrentDirectory();
+            ParseTemplate(args, index, arg, path);
+            ParseContent(args, index, arg, path);
+            ParseOutputResults(args, index, arg, path);
 
-            // deepcode ignore XmlInjection: XML is not used by this application, it is passed back to the user, deepcode ignore XXE: <please specify a reason of ignoring this>
-            preview.ParseArguments(args);
-            HandleNoArgumentsPassed(args, preview);
-            if (preview.CanRender)
+            // Switch watch param if needed
+            if (IsArgMatch(arg, "watch"))
             {
-                RenderAndWatch(preview);
-            }
-            else
-            {
-                LogMissingFiles(preview);
+                ShouldWatch = true;
             }
 
-            return preview;
-        }
-
-        /// <summary>Parses the arguments and sets process options.</summary>
-        /// <param name="args">The arguments. Values are expected to be "--template", "--help", "--content", "--output" or "--watch".</param>
-        internal void ParseArguments(string[] args)
-        {
-            for (var index = 0; index < args.Length; index++)
+            // Show help info
+            if (IsArgMatch(arg, "help"))
             {
-                var arg = args[index];
-                var path = Directory.GetCurrentDirectory();
-                ParseTemplate(args, index, arg, path);
-                ParseContent(args, index, arg, path);
-                ParseOutputResults(args, index, arg, path);
-
-                // Switch watch param if needed
-                if (IsArgMatch(arg, "watch"))
-                {
-                    ShouldWatch = true;
-                }
-
-                // Show help info
-                if (IsArgMatch(arg, "help"))
-                {
-                    WriteHelpOutput();
-                }
+                WriteHelpOutput();
             }
         }
+    }
 
-        /// <summary>
-        /// Parses the output results file path if specified.
-        /// </summary>
-        /// <param name="args">The passed command arguments.</param>
-        /// <param name="index">The parameter index.</param>
-        /// <param name="arg">The current argument.</param>
-        /// <param name="path">The target path.</param>
-        private void ParseOutputResults(string[] args, int index, string arg, string path)
+    /// <summary>
+    /// Parses the output results file path if specified.
+    /// </summary>
+    /// <param name="args">The passed command arguments.</param>
+    /// <param name="index">The parameter index.</param>
+    /// <param name="arg">The current argument.</param>
+    /// <param name="path">The target path.</param>
+    private void ParseOutputResults(string[] args, int index, string arg, string path)
+    {
+        if (IsArgMatch(arg, "output") && index - 1 < args.Length)
         {
-            if (IsArgMatch(arg, "output") && index - 1 < args.Length)
+            try
             {
-                try
-                {
-                    Output = Path.GetFullPath(args[index + 1], path);
-                }
-                catch
-                {
-                    WriteErrorLine($"Invalid output path: {args[index + 1]}");
-                }
+                Output = Path.GetFullPath(args[index + 1], path);
+            }
+            catch
+            {
+                WriteErrorLine($"Invalid output path: {args[index + 1]}");
             }
         }
+    }
 
-        /// <summary>
-        /// Parses the incoming content file path if specified.
-        /// </summary>
-        /// <param name="args">The passed command arguments.</param>
-        /// <param name="index">The parameter index.</param>
-        /// <param name="arg">The current argument.</param>
-        /// <param name="path">The target path.</param>
-        private void ParseContent(string[] args, int index, string arg, string path)
+    /// <summary>
+    /// Parses the incoming content file path if specified.
+    /// </summary>
+    /// <param name="args">The passed command arguments.</param>
+    /// <param name="index">The parameter index.</param>
+    /// <param name="arg">The current argument.</param>
+    /// <param name="path">The target path.</param>
+    private void ParseContent(string[] args, int index, string arg, string path)
+    {
+        if (IsArgMatch(arg, "content") && index - 1 < args.Length)
         {
-            if (IsArgMatch(arg, "content") && index - 1 < args.Length)
+            try
             {
-                try
-                {
-                    Content = Path.GetFullPath(args[index + 1], path);
-                }
-                catch
-                {
-                    WriteErrorLine($"Invalid content path: {args[index + 1]}");
-                }
+                Content = Path.GetFullPath(args[index + 1], path);
+            }
+            catch
+            {
+                WriteErrorLine($"Invalid content path: {args[index + 1]}");
             }
         }
+    }
 
-        /// <summary>
-        /// Parses the incoming template file path if specified.
-        /// </summary>
-        /// <param name="args">The passed command arguments.</param>
-        /// <param name="index">The parameter index.</param>
-        /// <param name="arg">The current argument.</param>
-        /// <param name="path">The target path.</param>
-        private void ParseTemplate(string[] args, int index, string arg, string path)
+    /// <summary>
+    /// Parses the incoming template file path if specified.
+    /// </summary>
+    /// <param name="args">The passed command arguments.</param>
+    /// <param name="index">The parameter index.</param>
+    /// <param name="arg">The current argument.</param>
+    /// <param name="path">The target path.</param>
+    private void ParseTemplate(string[] args, int index, string arg, string path)
+    {
+        // Parse incoming template file
+        if (IsArgMatch(arg, "template") && index - 1 < args.Length)
         {
-            // Parse incoming template file
-            if (IsArgMatch(arg, "template") && index - 1 < args.Length)
+            try
             {
-                try
-                {
-                    Template = Path.GetFullPath(args[index + 1], path);
-                }
-                catch
-                {
-                    WriteErrorLine($"Invalid template path: {args[index + 1]}");
-                }
+                Template = Path.GetFullPath(args[index + 1], path);
+            }
+            catch
+            {
+                WriteErrorLine($"Invalid template path: {args[index + 1]}");
             }
         }
+    }
 
-        /// <summary>
-        /// Renders the output and watches for changes if specified.
-        /// </summary>
-        /// <param name="preview">The current preview process.</param>
-        private static void RenderAndWatch(PreviewProcess preview)
+    /// <summary>
+    /// Renders the output and watches for changes if specified.
+    /// </summary>
+    /// <param name="preview">The current preview process.</param>
+    private static void RenderAndWatch(PreviewProcess preview)
+    {
+        preview.Render();
+
+        if (preview.ShouldWatch)
         {
-            preview.Render();
-
-            if (preview.ShouldWatch)
-            {
-                preview.StartWatch();
-                preview.LogMessage("Press any key to exit file watch...");
-                _ = Console.ReadKey();
-                preview.StopWatch();
-                preview.LogMessage("");
-            }
+            preview.StartWatch();
+            preview.LogMessage("Press any key to exit file watch...");
+            _ = Console.ReadKey();
+            preview.StopWatch();
+            preview.LogMessage();
         }
+    }
 
-        /// <summary>
-        /// Logs the missing files if found.
-        /// </summary>
-        /// <param name="preview">The current preview process.</param>
-        private static void LogMissingFiles(PreviewProcess preview)
-        {
-            if (!string.IsNullOrEmpty(preview.Content) && !string.IsNullOrEmpty(preview.Template))
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                preview.LogMessage("  Unable to render as input files are not found");
-                preview.LogMessage("");
-            }
-        }
-
-        /// <summary>
-        /// Handles the scenario where no arguments are passed to the application.
-        /// </summary>
-        /// <param name="args">The array of arguments passed to the application.</param>
-        /// <param name="preview">The instance of <see cref="PreviewProcess"/> to handle the output.</param>
-        private static void HandleNoArgumentsPassed(string[] args, PreviewProcess preview)
-        {
-            if (args?.Length == 0)
-            {
-                preview.WriteHelpOutput();
-            }
-        }
-
-        /// <summary>
-        /// Writes the help output.
-        /// </summary>
-        private void WriteHelpOutput()
-        {
-            LogMessage();
-            LogMessage("Arguments:");
-            LogMessage("  --template     : Relative path to the .liquid template source file");
-            LogMessage("  --content      : Relative path to the XML or JSON data source file");
-            LogMessage("  --output       : Relative path to the output result file");
-            LogMessage(
-                "  --watch        : Switch parameter to enable file watcher and produce output on file update");
-            LogMessage("  --help         : Switch parameter to show this information");
-            LogMessage();
-        }
-
-        /// <summary>
-        /// Writes an error line.
-        /// </summary>
-        /// <param name="error">The error.</param>
-        [ExcludeFromCodeCoverage]
-        private static void WriteErrorLine(string error)
+    /// <summary>
+    /// Logs the missing files if found.
+    /// </summary>
+    /// <param name="preview">The current preview process.</param>
+    private static void LogMissingFiles(PreviewProcess preview)
+    {
+        if (!string.IsNullOrEmpty(preview.Content) && !string.IsNullOrEmpty(preview.Template))
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"  {error}");
-            Console.ForegroundColor = ConsoleColor.White;
+            preview.LogMessage("  Unable to render as input files are not found");
+            preview.LogMessage();
+        }
+    }
+
+    /// <summary>
+    /// Handles the scenario where no arguments are passed to the application.
+    /// </summary>
+    /// <param name="args">The array of arguments passed to the application.</param>
+    /// <param name="preview">The instance of <see cref="PreviewProcess" /> to handle the output.</param>
+    private static void HandleNoArgumentsPassed(string[] args, PreviewProcess preview)
+    {
+        if (args?.Length == 0)
+        {
+            preview.WriteHelpOutput();
+        }
+    }
+
+    /// <summary>
+    /// Writes the help output.
+    /// </summary>
+    private void WriteHelpOutput()
+    {
+        LogMessage();
+        LogMessage("Arguments:");
+        LogMessage("  --template     : Relative path to the .liquid template source file");
+        LogMessage("  --content      : Relative path to the XML or JSON data source file");
+        LogMessage("  --output       : Relative path to the output result file");
+        LogMessage(
+            "  --watch        : Switch parameter to enable file watcher and produce output on file update");
+        LogMessage("  --help         : Switch parameter to show this information");
+        LogMessage();
+    }
+
+    /// <summary>
+    /// Writes an error line.
+    /// </summary>
+    /// <param name="error">The error.</param>
+    [ExcludeFromCodeCoverage]
+    private static void WriteErrorLine(string error)
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"  {error}");
+        Console.ForegroundColor = ConsoleColor.White;
+    }
+
+    /// <summary>
+    /// Determines whether the argument matches the partial argument key name.
+    /// </summary>
+    /// <param name="arg">The argument.</param>
+    /// <param name="key">The key.</param>
+    /// <returns>
+    /// <c>true</c> if argument found; otherwise, <c>false</c>.
+    /// </returns>
+    private static bool IsArgMatch(string arg, string key)
+    {
+        return string.CompareOrdinal(arg, "--" + key) == 0;
+    }
+
+    /// <summary>
+    /// Renders the output using the specified properties of the instance.
+    /// </summary>
+    /// <returns>The output from the template data and content.</returns>
+    public string Render()
+    {
+        if (!CanRender)
+        {
+            WriteErrorLine("Unable to render as inputs our outputs not found or not specified");
+            return string.Empty;
         }
 
-        /// <summary>
-        /// Determines whether the argument matches the partial argument key name.
-        /// </summary>
-        /// <param name="arg">The argument.</param>
-        /// <param name="key">The key.</param>
-        /// <returns>
-        ///   <c>true</c> if argument found; otherwise, <c>false</c>.
-        /// </returns>
-        private static bool IsArgMatch(string arg, string key) =>
-            string.CompareOrdinal(arg, "--" + key) == 0;
-
-        /// <summary>
-        /// Renders the output using the specified properties of the instance.
-        /// </summary>
-        /// <returns>The output from the template data and content.</returns>
-        public string Render()
+        string content;
+        try
         {
-            if (!CanRender)
-            {
-                WriteErrorLine("Unable to render as inputs our outputs not found or not specified");
-                return string.Empty;
-            }
+            content = File.ReadAllText(Content);
+        }
+        catch (IOException)
+        {
+            // Lock issue, wait and retry
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            return Render();
+        }
 
-            string content;
+        string template;
+        try
+        {
+            template = File.ReadAllText(Template);
+        }
+        catch (IOException)
+        {
+            // Lock issue, wait and retry
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            return Render();
+        }
+
+        var parser = new LiquidParser();
+
+        if (Content.ToLowerInvariant().EndsWith(".json"))
+        {
             try
             {
-                content = File.ReadAllText(Content);
-            }
-            catch (IOException)
-            {
-                // Lock issue, wait and retry
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                return Render();
-            }
-
-            string template;
-            try
-            {
-                template = File.ReadAllText(Template);
-            }
-            catch (IOException)
-            {
-                // Lock issue, wait and retry
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                return Render();
-            }
-
-            var parser = new LiquidParser();
-
-            if (Content.ToLowerInvariant().EndsWith(".json"))
-            {
-                try
-                {
-                    parser.SetContentJson(content);
-                }
-                catch (Exception e)
-                {
-                    LogWarning("  Unable to read input JSON file", e);
-                    return string.Empty;
-                }
-            }
-
-            if (Content.ToLowerInvariant().EndsWith(".xml"))
-            {
-                try
-                {
-                    parser.SetContentXml(content);
-                }
-                catch (Exception ex)
-                {
-                    LogWarning("  Unable to read input XML file", ex);
-                    return string.Empty;
-                }
-            }
-
-            try
-            {
-                var output = parser.Parse(template).Render();
-                File.WriteAllText(Output, output);
-
-                return output;
+                parser.SetContentJson(content);
             }
             catch (Exception e)
             {
-                WriteErrorLine($"Error: {e.Message}");
+                LogWarning("  Unable to read input JSON file", e);
                 return string.Empty;
             }
-
-            // TODO: Refactor this method
         }
 
-        /// <summary>
-        /// Starts watching for changes.
-        /// </summary>
-        public void StartWatch()
+        if (Content.ToLowerInvariant().EndsWith(".xml"))
         {
-            if (CanRender)
+            try
             {
-                if (_contentWatcher == null)
-                {
-                    _contentWatcher = StartWatch(Content);
-                    _templateWatcher = StartWatch(Template);
-                }
-
-                _contentWatcher!.EnableRaisingEvents = true;
-                _templateWatcher!.EnableRaisingEvents = true;
+                parser.SetContentXml(content);
+            }
+            catch (Exception ex)
+            {
+                LogWarning("  Unable to read input XML file", ex);
+                return string.Empty;
             }
         }
 
-        /// <summary>
-        /// Starts watching for changes.
-        /// </summary>
-        /// <param name="path">The path to the specific file.</param>
-        /// <returns>The watcher instance so it can be stopped later.</returns>
-        private FileSystemWatcher StartWatch(string path)
+        try
         {
-            var watcher = new FileSystemWatcher
-            {
-                IncludeSubdirectories = false,
-                Path = Path.GetDirectoryName(path)!,
-                Filter = Path.GetFileName(path)
-            };
+            var output = parser.Parse(template).Render();
+            File.WriteAllText(Output, output);
 
-            watcher.Changed += OnChanged;
-            return watcher;
+            return output;
+        }
+        catch (Exception e)
+        {
+            WriteErrorLine($"Error: {e.Message}");
+            return string.Empty;
         }
 
-        /// <summary>
-        /// Stops watching for changes.
-        /// </summary>
-        public void StopWatch()
+        // TODO: Refactor this method
+    }
+
+    /// <summary>
+    /// Starts watching for changes.
+    /// </summary>
+    public void StartWatch()
+    {
+        if (CanRender)
         {
-            if (_contentWatcher != null)
+            if (_contentWatcher == null)
             {
-                _contentWatcher.EnableRaisingEvents = false;
+                _contentWatcher = StartWatch(Content);
+                _templateWatcher = StartWatch(Template);
             }
 
-            if (_templateWatcher != null)
-            {
-                _templateWatcher.EnableRaisingEvents = false;
-            }
-
-            LogMessage("");
+            _contentWatcher!.EnableRaisingEvents = true;
+            _templateWatcher!.EnableRaisingEvents = true;
         }
+    }
 
-        /// <summary>
-        /// Writes the text message to log and console.
-        /// </summary>
-        /// <param name="text">The message.</param>
-        private void LogMessage(string text = "")
+    /// <summary>
+    /// Starts watching for changes.
+    /// </summary>
+    /// <param name="path">The path to the specific file.</param>
+    /// <returns>The watcher instance so it can be stopped later.</returns>
+    private FileSystemWatcher StartWatch(string path)
+    {
+        var watcher = new FileSystemWatcher
         {
-            Console.WriteLine(text);
-            _writer.WriteLine(text);
-        }
+            IncludeSubdirectories = false,
+            Path = Path.GetDirectoryName(path)!,
+            Filter = Path.GetFileName(path)
+        };
 
-        /// <summary>
-        /// Writes the warning message to log and console.
-        /// </summary>
-        /// <param name="text">The message.</param>
-        /// <param name="e">The exception.</param>
-        [ExcludeFromCodeCoverage]
-        private void LogWarning(string text = "", Exception? e = null)
+        watcher.Changed += OnChanged;
+        return watcher;
+    }
+
+    /// <summary>
+    /// Stops watching for changes.
+    /// </summary>
+    public void StopWatch()
+    {
+        if (_contentWatcher != null)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            LogMessage(text);
-            LogMessage($"    Info: {e?.Message}");
-            Console.ForegroundColor = ConsoleColor.White;
+            _contentWatcher.EnableRaisingEvents = false;
         }
 
-        /// <summary>
-        /// Event is called when a source file has changed and calls to process output using that input.
-        /// </summary>
-        /// <param name="source">The source.</param>
-        /// <param name="e">The <see cref="FileSystemEventArgs"/> instance containing the event data.</param>
-        [ExcludeFromCodeCoverage]
-        private void OnChanged(object source, FileSystemEventArgs e) => Render();
+        if (_templateWatcher != null)
+        {
+            _templateWatcher.EnableRaisingEvents = false;
+        }
+
+        LogMessage();
+    }
+
+    /// <summary>
+    /// Writes the text message to log and console.
+    /// </summary>
+    /// <param name="text">The message.</param>
+    private void LogMessage(string text = "")
+    {
+        Console.WriteLine(text);
+        _writer.WriteLine(text);
+    }
+
+    /// <summary>
+    /// Writes the warning message to log and console.
+    /// </summary>
+    /// <param name="text">The message.</param>
+    /// <param name="e">The exception.</param>
+    [ExcludeFromCodeCoverage]
+    private void LogWarning(string text = "", Exception? e = null)
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        LogMessage(text);
+        LogMessage($"    Info: {e?.Message}");
+        Console.ForegroundColor = ConsoleColor.White;
+    }
+
+    /// <summary>
+    /// Event is called when a source file has changed and calls to process output using that input.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="e">The <see cref="FileSystemEventArgs" /> instance containing the event data.</param>
+    [ExcludeFromCodeCoverage]
+    private void OnChanged(object source, FileSystemEventArgs e)
+    {
+        Render();
     }
 }

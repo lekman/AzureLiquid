@@ -1,7 +1,5 @@
 // <copyright file="BasicObject.cs">
 // Licensed under the open source Apache License, Version 2.0.
-// Project: AzureLiquid.Tests
-// Created: 2022-10-18 07:46
 // </copyright>
 
 namespace AzureLiquid.Tests;
@@ -10,7 +8,7 @@ namespace AzureLiquid.Tests;
 /// Basic test of an object to serialize and render.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the <see cref="BasicObject"/> class.
+/// Initializes a new instance of the <see cref="BasicObject" /> class.
 /// </remarks>
 /// <param name="title">The title.</param>
 public class BasicObject(string title)

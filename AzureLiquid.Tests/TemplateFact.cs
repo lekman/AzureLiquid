@@ -1,3 +1,7 @@
+// <copyright file="TemplateFact.cs">
+// Licensed under the open source Apache License, Version 2.0.
+// </copyright>
+
 namespace AzureLiquid.Tests;
 
 /// <summary>

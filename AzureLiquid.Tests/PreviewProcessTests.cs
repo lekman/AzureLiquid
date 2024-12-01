@@ -1,7 +1,5 @@
 ﻿// <copyright file="PreviewProcessTests.cs">
 // Licensed under the open source Apache License, Version 2.0.
-// Project: AzureLiquid.Tests
-// Created: 2022-10-18 07:46
 // </copyright>
 
 using System.IO;
@@ -13,7 +11,7 @@ using Xunit;
 namespace AzureLiquid.Tests;
 
 /// <summary>
-/// Test fixture for verifying the <see cref="PreviewProcess"/> class.
+/// Test fixture for verifying the <see cref="PreviewProcess" /> class.
 /// </summary>
 public class PreviewProcessTests
 {
@@ -85,12 +83,15 @@ public class PreviewProcessTests
     /// <param name="arg8">Eighth argument.</param>
     [Theory]
     [InlineData(false, "", "", "", "", "", "", "", "")]
-    [InlineData(false, "--template", "./Resources/event.liquid", "--content", "./Resources/event.json", "--output", "./Resources/preview.txt", "", "")]
+    [InlineData(false, "--template", "./Resources/event.liquid", "--content", "./Resources/event.json", "--output",
+        "./Resources/preview.txt", "", "")]
     [InlineData(false, "--template", "./Resources/event.liquid", "", "", "", "", "", "")]
     [InlineData(false, "--watch", "", "", "", "", "", "", "")]
     [InlineData(true, "--help", "", "", "", "", "", "", "")]
-    [InlineData(true, "--template", "./Resources/event_not_found.liquid", "--content", "./Resources/event.xml", "--output", "./Resources/preview.txt", "", "")]
-    public void EnsureArgumentParsing(bool shouldLog, string arg1, string arg2, string arg3, string arg4, string arg5, string arg6, string arg7, string arg8)
+    [InlineData(true, "--template", "./Resources/event_not_found.liquid", "--content", "./Resources/event.xml",
+        "--output", "./Resources/preview.txt", "", "")]
+    public void EnsureArgumentParsing(bool shouldLog, string arg1, string arg2, string arg3, string arg4, string arg5,
+        string arg6, string arg7, string arg8)
     {
         // Arrange
         var args = new[] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 };
@@ -139,7 +140,11 @@ public class PreviewProcessTests
     public void EnsureWatcher()
     {
         // Arrange
-        var instance = PreviewProcess.Create(new[] { "--template", "./Resources/event.liquid", "--content", "./Resources/event.json", "--output", "./Resources/preview.txt" });
+        var instance = PreviewProcess.Create(new[]
+        {
+            "--template", "./Resources/event.liquid", "--content", "./Resources/event.json", "--output",
+            "./Resources/preview.txt"
+        });
 
         // Act
         instance.StartWatch();
@@ -149,13 +154,15 @@ public class PreviewProcessTests
         instance.Log.Should().NotBeEmpty("A log should have been created");
     }
 
+    #region Nested type: Arrangement
+
     /// <summary>
     /// Contains arranged values used for testing, containing mock instances and expected return values.
     /// </summary>
     private class Arrangement
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Arrangement"/> class.
+        /// Initializes a new instance of the <see cref="Arrangement" /> class.
         /// </summary>
         public Arrangement()
         {
@@ -216,4 +223,6 @@ public class PreviewProcessTests
             return Path.GetFullPath(path, basePath);
         }
     }
+
+    #endregion
 }

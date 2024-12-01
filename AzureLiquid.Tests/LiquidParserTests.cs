@@ -1,7 +1,5 @@
 // <copyright file="LiquidParserTests.cs">
 // Licensed under the open source Apache License, Version 2.0.
-// Project: AzureLiquid.Tests
-// Created: 2022-10-18 07:48
 // </copyright>
 
 using System.Text.RegularExpressions;
@@ -11,7 +9,7 @@ using Xunit;
 namespace AzureLiquid.Tests;
 
 /// <summary>
-/// Test fixture for verifying the <see cref="LiquidParser"/> class.
+/// Test fixture for verifying the <see cref="LiquidParser" /> class.
 /// </summary>
 public class LiquidParserTests
 {
@@ -39,19 +37,28 @@ public class LiquidParserTests
     /// Ensures the deep parsing works with nested objects.
     /// </summary>
     [Fact]
-    public void EnsureDeepParsing() => Arrange(new Arrangement().Deep, true);
+    public void EnsureDeepParsing()
+    {
+        Arrange(new Arrangement().Deep, true);
+    }
 
     /// <summary>
     /// Ensures the template parsing works when using a liquid file.
     /// </summary>
     [Fact]
-    public void EnsureTemplateParsing() => Arrange(new Arrangement().SimpleTemplate);
+    public void EnsureTemplateParsing()
+    {
+        Arrange(new Arrangement().SimpleTemplate);
+    }
 
     /// <summary>
     /// Ensures loading JSON from a file and parsing with a liquid file template works.
     /// </summary>
     [Fact]
-    public void EnsureJsonBodyTemplateParsing() => Arrange(new Arrangement().Event);
+    public void EnsureJsonBodyTemplateParsing()
+    {
+        Arrange(new Arrangement().Event);
+    }
 
     /// <summary>
     /// Compares two text snippets but ignores differences in whitespace.
@@ -66,7 +73,7 @@ public class LiquidParserTests
     }
 
     /// <summary>
-    /// Creates a <see cref="LiquidParser"/> instance with the specified template fact.
+    /// Creates a <see cref="LiquidParser" /> instance with the specified template fact.
     /// </summary>
     /// <typeparam name="T">The type of the template fact content.</typeparam>
     /// <param name="fact">The template fact to use.</param>
@@ -96,7 +103,7 @@ public class LiquidParserTests
     }
 
     /// <summary>
-    ///  Ensures loading XML or JSON from a file and parsing with a liquid file template works.
+    /// Ensures loading XML or JSON from a file and parsing with a liquid file template works.
     /// </summary>
     /// <typeparam name="T">The type of the template fact content.</typeparam>
     /// <param name="fact">The template fact to test.</param>
@@ -111,7 +118,7 @@ public class LiquidParserTests
 
         // Assert
         result.Should().NotBeEmpty("A result should have been returned");
-        CompareTextsNoWhitespace(result, fact.Expected!.ToString()).Should()
+        CompareTextsNoWhitespace(result, fact.Expected!).Should()
             .BeTrue("The expected result should be returned");
     }
 }

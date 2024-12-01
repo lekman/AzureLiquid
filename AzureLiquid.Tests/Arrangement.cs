@@ -1,7 +1,5 @@
 // <copyright file="Arrangement.cs">
 // Licensed under the open source Apache License, Version 2.0.
-// Project: AzureLiquid.Tests
-// Created: 2022-10-18 07:46
 // </copyright>
 
 using AzureLiquid.Tests.Resources;
@@ -14,7 +12,7 @@ namespace AzureLiquid.Tests;
 public class Arrangement
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Arrangement"/> class.
+    /// Initializes a new instance of the <see cref="Arrangement" /> class.
     /// </summary>
     public Arrangement()
     {
@@ -73,5 +71,4 @@ public class Arrangement
     /// Gets the basic object fact.
     /// </summary>
     public BasicObject Basic { get; }
-
 }

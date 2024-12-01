@@ -20,4 +20,5 @@ reportgenerator -reports:$COVERAGE_FILE -targetdir:"coveragereport" -reporttypes
 open ./coveragereport/index.htm
 ```
 
-Test coverage is published to the `./coverage` folder and its path is stored in the `$COVERAGE_FILE` environment variable. The `open` command is used to view the coverage report in a local browser.
+Test coverage is published to the `./coverage` folder and its path is stored in the `$COVERAGE_FILE` environment
+variable. The `open` command is used to view the coverage report in a local browser.
