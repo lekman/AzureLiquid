@@ -18,6 +18,7 @@ public class PreviewProcessArguments
     /// <summary>
     /// Gets the index of the argument, if it exists.
     /// </summary>
+    /// <param name="args">The arguments.</param>
     /// <param name="key">The key.</param>
     /// <returns>The index of the argument.</returns>
     private static int GetArgumentIndex(string[] args, string key)
@@ -47,6 +48,14 @@ public class PreviewProcessArguments
     }
 
     /// <summary>
+    /// Gets a value indicating whether the specific argument key was found in the arguments.
+    /// </summary>
+    /// <param name="args">The passed arguments.</param>
+    /// <param name="key">The key.</param>
+    /// <returns><c>true</c> if the argument was found, otherwise <c>false</c>,</returns>
+    public static bool HasArgument(string[] args, string key) => args.Any(arg => IsArgMatch(arg, key));
+
+    /// <summary>
     /// Parses the argument value.
     /// </summary>
     /// <param name="args">The arguments.</param>
@@ -56,8 +65,8 @@ public class PreviewProcessArguments
     {
         var index = GetArgumentIndex(args, key);
         return
-            index == -1 || index - 1 >= args?.Length || args == null ? string.Empty : // No match, or no arguments passed
-            Path.GetFullPath(args[index + 1], _path) // Argument found, parsing path
-            ?? string.Empty; // Argument found, but path is invalid
+            index == -1 || index - 1 >= args?.Length || args == null
+                ? string.Empty // No match, or no arguments passed
+                : Path.GetFullPath(args[index + 1], _path); // Argument found, parsing path
     }
 }
