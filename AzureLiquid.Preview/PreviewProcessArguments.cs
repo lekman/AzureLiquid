@@ -23,7 +23,7 @@ public class PreviewProcessArguments
     /// <returns>The index of the argument.</returns>
     private static int GetArgumentIndex(string[] args, string key)
     {
-        for (int i = 0; i < args?.Length; i++)
+        for (int i = 0; i < args.Length; i++)
         {
             if (IsArgMatch(args[i], key))
             {
@@ -65,7 +65,7 @@ public class PreviewProcessArguments
     {
         var index = GetArgumentIndex(args, key);
         return
-            index == -1 || index - 1 >= args?.Length || args == null
+            index == -1 || index - 1 >= args.Length
                 ? string.Empty // No match, or no arguments passed
                 : Path.GetFullPath(args[index + 1], _path); // Argument found, parsing path
     }
