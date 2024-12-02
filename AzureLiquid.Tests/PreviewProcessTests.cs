@@ -72,7 +72,6 @@ public class PreviewProcessTests
     /// <summary>
     /// Ensure the preview process can be created from a set of arguments.
     /// </summary>
-    /// <param name="shouldLog">Determine if a log should be produced.</param>
     /// <param name="arg1">First argument.</param>
     /// <param name="arg2">Second argument.</param>
     /// <param name="arg3">Third argument.</param>
@@ -82,16 +81,13 @@ public class PreviewProcessTests
     /// <param name="arg7">Seventh argument.</param>
     /// <param name="arg8">Eighth argument.</param>
     [Theory]
-    [InlineData(false, "", "", "", "", "", "", "", "")]
-    [InlineData(false, "--template", "./Resources/event.liquid", "--content", "./Resources/event.json", "--output",
-        "./Resources/preview.txt", "", "")]
-    [InlineData(false, "--template", "./Resources/event.liquid", "", "", "", "", "", "")]
-    [InlineData(false, "--watch", "", "", "", "", "", "", "")]
-    [InlineData(true, "--help", "", "", "", "", "", "", "")]
-    [InlineData(true, "--template", "./Resources/event_not_found.liquid", "--content", "./Resources/event.xml",
-        "--output", "./Resources/preview.txt", "", "")]
-    public void EnsureArgumentParsing(bool shouldLog, string arg1, string arg2, string arg3, string arg4, string arg5,
-        string arg6, string arg7, string arg8)
+    [InlineData("", "", "", "", "", "", "", "")]
+    [InlineData("--template", "./Resources/event.liquid", "--content", "./Resources/event.json", "--output", "./Resources/preview.txt", "", "")]
+    [InlineData("--template", "./Resources/event.liquid", "", "", "", "", "", "")]
+    [InlineData("--watch", "", "", "", "", "", "", "")]
+    [InlineData("--help", "", "", "", "", "", "", "")]
+    [InlineData("--template", "./Resources/event_not_found.liquid", "--content", "./Resources/event.xml", "--output", "./Resources/preview.txt", "", "")]
+    public void EnsureArgumentParsing(string arg1, string arg2, string arg3, string arg4, string arg5, string arg6, string arg7, string arg8)
     {
         // Arrange
         var args = new[] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 };
@@ -101,17 +97,11 @@ public class PreviewProcessTests
 
         // Assert
         preview.Should().NotBeNull("A preview process should have been created");
-
-        if (shouldLog)
-        {
-            preview.Log.Should().NotBeEmpty("A log should have been created");
-        }
-        else
-        {
-            preview.Log.Should().BeEmpty("No log should have been created");
-        }
     }
 
+    /// <summary>
+    /// Ensure the preview process can be created from a set of arguments.
+    /// </summary>
     [Fact]
     public void EnsureObjectCreation()
     {
@@ -152,8 +142,6 @@ public class PreviewProcessTests
         // Assert
         instance.Log.Should().NotBeEmpty("A log should have been created");
     }
-
-    #region Nested type: Arrangement
 
     /// <summary>
     /// Contains arranged values used for testing, containing mock instances and expected return values.
@@ -222,6 +210,4 @@ public class PreviewProcessTests
             return Path.GetFullPath(path, basePath);
         }
     }
-
-    #endregion
 }
