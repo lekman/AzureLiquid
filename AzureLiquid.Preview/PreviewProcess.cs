@@ -103,6 +103,7 @@ public class PreviewProcess
         preview.Template = preview._args.ParsePath(args, "template");
         preview.Content = preview._args.ParsePath(args, "content");
         preview.Output = preview._args.ParsePath(args, "output");
+        preview.ShouldWatch = PreviewProcessArguments.HasArgument(args, "watch");
 
         HandleNoArgumentsPassed(args, preview);
 
@@ -196,19 +197,6 @@ public class PreviewProcess
     }
 
     /// <summary>
-    /// Determines whether the argument matches the partial argument key name.
-    /// </summary>
-    /// <param name="arg">The argument.</param>
-    /// <param name="key">The key.</param>
-    /// <returns>
-    /// <c>true</c> if argument found; otherwise, <c>false</c>.
-    /// </returns>
-    private static bool IsArgMatch(string arg, string key)
-    {
-        return string.CompareOrdinal(arg, "--" + key) == 0;
-    }
-
-    /// <summary>
     /// Renders the output using the specified properties of the instance.
     /// </summary>
     /// <returns>The output from the template data and content.</returns>
@@ -233,12 +221,9 @@ public class PreviewProcess
         }
 
         var parser = new LiquidParser();
-        if (!SetParserContent(parser, content))
-        {
-            return string.Empty;
-        }
-
-        return RenderTemplate(parser, template);
+        return !SetParserContent(parser, content) ?
+            string.Empty :
+            RenderTemplate(parser, template);
     }
 
     /// <summary>
