@@ -40,3 +40,6 @@ obj
 
 # JetBrains
 .idea
+
+# Temp file
+temp.md

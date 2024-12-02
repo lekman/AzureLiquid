@@ -13,6 +13,11 @@ namespace AzureLiquid.Preview;
 public class PreviewProcess
 {
     /// <summary>
+    /// The argument parser.
+    /// </summary>
+    private readonly PreviewProcessArguments _args;
+
+    /// <summary>
     /// Handles writing console output to private persisted log.
     /// </summary>
     private readonly StringWriter _writer = new();
@@ -32,6 +37,7 @@ public class PreviewProcess
     /// </summary>
     public PreviewProcess()
     {
+        _args = new PreviewProcessArguments();
         Template = string.Empty;
         Content = string.Empty;
         Output = "./preview.txt";
@@ -68,10 +74,10 @@ public class PreviewProcess
     public string Output { get; set; }
 
     /// <summary>
-    /// Gets a value indicating whether the process should watch for changes to template or content files.
+    /// Gets or sets a value indicating whether the process should watch for changes to template or content files.
     /// </summary>
     /// <value>
-    /// <c>true</c> if should watch; otherwise, <c>false</c>.
+    /// <c>true</c> if the process should watch for changes; otherwise, <c>false</c>.
     /// </value>
     [ExcludeFromCodeCoverage]
     private bool ShouldWatch { get; set; }
@@ -87,16 +93,23 @@ public class PreviewProcess
     /// <summary>
     /// Start a new instance of the <see cref="PreviewProcess" /> class using the incoming arguments.
     /// </summary>
-    /// <param name="args">The process arguments</param>
+    /// <param name="args">The process arguments.</param>
     /// <returns>A new instance of the <see cref="PreviewProcess" /> class.</returns>
     [ExcludeFromCodeCoverage]
     public static PreviewProcess Create(string[] args)
     {
         var preview = new PreviewProcess();
 
-        // deepcode ignore XmlInjection: XML is not used by this application, it is passed back to the user, deepcode ignore XXE: <please specify a reason of ignoring this>
-        preview.ParseArguments(args);
-        HandleNoArgumentsPassed(args, preview);
+        preview.Template = preview._args.ParsePath(args, "template");
+        preview.Content = preview._args.ParsePath(args, "content");
+        preview.Output = preview._args.ParsePath(args, "output");
+        preview.ShouldWatch = PreviewProcessArguments.HasArgument(args, "watch");
+
+        if (args.Length == 0)
+        {
+            preview.WriteHelpOutput();
+        }
+
         if (preview.CanRender)
         {
             RenderAndWatch(preview);
@@ -107,107 +120,6 @@ public class PreviewProcess
         }
 
         return preview;
-    }
-
-    /// <summary>Parses the arguments and sets process options.</summary>
-    /// <param name="args">
-    /// The arguments. Values are expected to be "--template", "--help", "--content", "--output" or
-    /// "--watch".
-    /// </param>
-    private void ParseArguments(string[] args)
-    {
-        for (var index = 0; index < args.Length; index++)
-        {
-            var arg = args[index];
-            var path = Directory.GetCurrentDirectory();
-            ParseTemplate(args, index, arg, path);
-            ParseContent(args, index, arg, path);
-            ParseOutputResults(args, index, arg, path);
-
-            // Switch watch param if needed
-            if (IsArgMatch(arg, "watch"))
-            {
-                ShouldWatch = true;
-            }
-
-            // Show help info
-            if (IsArgMatch(arg, "help"))
-            {
-                WriteHelpOutput();
-            }
-        }
-    }
-
-    /// <summary>
-    /// Parses the output results file path if specified.
-    /// </summary>
-    /// <param name="args">The passed command arguments.</param>
-    /// <param name="index">The parameter index.</param>
-    /// <param name="arg">The current argument.</param>
-    /// <param name="path">The target path.</param>
-    private void ParseOutputResults(string[] args, int index, string arg, string path)
-    {
-        if (!IsArgMatch(arg, "output") || index - 1 >= args.Length)
-        {
-            return;
-        }
-
-        try
-        {
-            Output = Path.GetFullPath(args[index + 1], path);
-        }
-        catch
-        {
-            WriteErrorLine($"Invalid output path: {args[index + 1]}");
-        }
-    }
-
-    /// <summary>
-    /// Parses the incoming content file path if specified.
-    /// </summary>
-    /// <param name="args">The passed command arguments.</param>
-    /// <param name="index">The parameter index.</param>
-    /// <param name="arg">The current argument.</param>
-    /// <param name="path">The target path.</param>
-    private void ParseContent(string[] args, int index, string arg, string path)
-    {
-        if (!IsArgMatch(arg, "content") || index - 1 >= args.Length)
-        {
-            return;
-        }
-
-        try
-        {
-            Content = Path.GetFullPath(args[index + 1], path);
-        }
-        catch
-        {
-            WriteErrorLine($"Invalid content path: {args[index + 1]}");
-        }
-    }
-
-    /// <summary>
-    /// Parses the incoming template file path if specified.
-    /// </summary>
-    /// <param name="args">The passed command arguments.</param>
-    /// <param name="index">The parameter index.</param>
-    /// <param name="arg">The current argument.</param>
-    /// <param name="path">The target path.</param>
-    private void ParseTemplate(string[] args, int index, string arg, string path)
-    {
-        if (!IsArgMatch(arg, "template") || index - 1 >= args.Length)
-        {
-            return;
-        }
-
-        try
-        {
-            Template = Path.GetFullPath(args[index + 1], path);
-        }
-        catch
-        {
-            WriteErrorLine($"Invalid template path: {args[index + 1]}");
-        }
     }
 
     /// <summary>
@@ -247,19 +159,6 @@ public class PreviewProcess
     }
 
     /// <summary>
-    /// Handles the scenario where no arguments are passed to the application.
-    /// </summary>
-    /// <param name="args">The array of arguments passed to the application.</param>
-    /// <param name="preview">The instance of <see cref="PreviewProcess" /> to handle the output.</param>
-    private static void HandleNoArgumentsPassed(string[] args, PreviewProcess preview)
-    {
-        if (args.Length == 0)
-        {
-            preview.WriteHelpOutput();
-        }
-    }
-
-    /// <summary>
     /// Writes the help output.
     /// </summary>
     private void WriteHelpOutput()
@@ -288,19 +187,6 @@ public class PreviewProcess
     }
 
     /// <summary>
-    /// Determines whether the argument matches the partial argument key name.
-    /// </summary>
-    /// <param name="arg">The argument.</param>
-    /// <param name="key">The key.</param>
-    /// <returns>
-    /// <c>true</c> if argument found; otherwise, <c>false</c>.
-    /// </returns>
-    private static bool IsArgMatch(string arg, string key)
-    {
-        return string.CompareOrdinal(arg, "--" + key) == 0;
-    }
-
-    /// <summary>
     /// Renders the output using the specified properties of the instance.
     /// </summary>
     /// <returns>The output from the template data and content.</returns>
@@ -308,67 +194,99 @@ public class PreviewProcess
     {
         if (!CanRender)
         {
-            WriteErrorLine("Unable to render as inputs our outputs not found or not specified");
+            WriteErrorLine("Unable to render as inputs or outputs not found or not specified");
             return string.Empty;
         }
 
-        string content;
-        try
+        var content = ReadFileContent(Content);
+        if (string.IsNullOrEmpty(content))
         {
-            content = File.ReadAllText(Content);
-        }
-        catch (IOException)
-        {
-            // Lock issue, wait and retry
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-            return Render();
+            return string.Empty;
         }
 
-        string template;
-        try
+        var template = ReadFileContent(Template);
+        if (string.IsNullOrEmpty(template))
         {
-            template = File.ReadAllText(Template);
-        }
-        catch (IOException)
-        {
-            // Lock issue, wait and retry
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-            return Render();
+            return string.Empty;
         }
 
         var parser = new LiquidParser();
+        return !SetParserContent(parser, content) ? string.Empty : RenderTemplate(parser, template);
+    }
 
-        if (Content.ToLowerInvariant().EndsWith(".json"))
+    /// <summary>
+    /// Reads the file content.
+    /// </summary>
+    /// <param name="filePath">The file path.</param>
+    /// <param name="retry">The operation is being retried.</param>
+    /// <returns>The file content.</returns>
+    internal string ReadFileContent(string filePath, bool retry = false)
+    {
+        try
         {
-            try
+            return File.ReadAllText(filePath);
+        }
+        catch
+        {
+            // Lock issue, wait and retry
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            if (!retry)
+            {
+                return ReadFileContent(filePath, true);
+            }
+
+            LogWarning($"Unable to read file: {filePath}");
+            return string.Empty;
+        }
+    }
+
+    /// <summary>
+    /// Sets the parser content.
+    /// </summary>
+    /// <param name="parser">The parser.</param>
+    /// <param name="content">The content.</param>
+    /// <returns>
+    /// <c>true</c> if the content was set; otherwise, <c>false</c>.
+    /// </returns>
+    private bool SetParserContent(LiquidParser parser, string content)
+    {
+        try
+        {
+            if (Content.ToLowerInvariant().EndsWith(".json"))
             {
                 parser.SetContentJson(content);
             }
-            catch (Exception e)
-            {
-                LogWarning("  Unable to read input JSON file", e);
-                return string.Empty;
-            }
-        }
-
-        if (Content.ToLowerInvariant().EndsWith(".xml"))
-        {
-            try
+            else if (Content.ToLowerInvariant().EndsWith(".xml"))
             {
                 parser.SetContentXml(content);
             }
-            catch (Exception ex)
+            else
             {
-                LogWarning("  Unable to read input XML file", ex);
-                return string.Empty;
+                WriteErrorLine("Unsupported content type");
+                return false;
             }
         }
+        catch (Exception e)
+        {
+            LogWarning("Unable to set parser content", e);
+            return false;
+        }
 
+        return true;
+    }
+
+    /// <summary>
+    /// Renders the template.
+    /// </summary>
+    /// <param name="parser">The parser.</param>
+    /// <param name="template">The template.</param>
+    /// <returns>The output from the template.</returns>
+    private string RenderTemplate(LiquidParser parser, string template)
+    {
         try
         {
             var output = parser.Parse(template).Render();
             File.WriteAllText(Output, output);
-
             return output;
         }
         catch (Exception e)
@@ -376,8 +294,6 @@ public class PreviewProcess
             WriteErrorLine($"Error: {e.Message}");
             return string.Empty;
         }
-
-        // TODO: Refactor this method
     }
 
     /// <summary>
