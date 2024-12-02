@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/lekman/AzureLiquid/compare/AzureLiquid@v1.2.0...AzureLiquid@v1.3.0) (2024-12-02)
+
+
+### Features
+
+* Add Qodana configuration file and improve code formatting in test files ([d0f4b2c](https://github.com/lekman/AzureLiquid/commit/d0f4b2c47759750b96c75e07fc81843f08594dc7))
+
 ## [1.2.0](https://github.com/lekman/AzureLiquid/compare/AzureLiquid@v1.1.0...AzureLiquid@v1.2.0) (2024-11-30)
 
 ### Features
