@@ -21,7 +21,7 @@ public class PreviewProcessArguments
     /// <param name="args">The arguments.</param>
     /// <param name="key">The key.</param>
     /// <returns>The index of the argument.</returns>
-    private static int GetArgumentIndex(string[] args, string key)
+    internal static int GetArgumentIndex(string[] args, string key)
     {
         for (int i = 0; i < args.Length; i++)
         {
@@ -42,7 +42,7 @@ public class PreviewProcessArguments
     /// <returns>
     /// <c>true</c> if argument found; otherwise, <c>false</c>.
     /// </returns>
-    private static bool IsArgMatch(string arg, string key)
+    internal static bool IsArgMatch(string arg, string key)
     {
         return string.CompareOrdinal(arg, "--" + key) == 0;
     }

@@ -2,8 +2,9 @@
 // Licensed under the open source Apache License, Version 2.0.
 // </copyright>
 
-// deepcode ignore XXE: All input is returned to original source and is not used internally
-
+using System.Runtime.CompilerServices;
 using AzureLiquid.Preview;
+
+[assembly: InternalsVisibleTo("AzureLiquid.Tests")]
 
 PreviewProcess.Create(args);
