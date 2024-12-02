@@ -87,6 +87,8 @@ public class PreviewProcessTests
     [InlineData("--watch", "", "", "", "", "", "", "")]
     [InlineData("--help", "", "", "", "", "", "", "")]
     [InlineData("--template", "./Resources/event_not_found.liquid", "--content", "./Resources/event.xml", "--output", "./Resources/preview.txt", "", "")]
+    [InlineData("--template", "./Resources/empty.liquid", "--content", "./Resources/event.json", "--output", "./Resources/preview.txt", "", "")]
+    [InlineData("--template", "./Resources/empty.liquid", "--content", "./Resources/empty.json", "--output", "./Resources/preview.txt", "", "")]
     public void EnsureArgumentParsing(string arg1, string arg2, string arg3, string arg4, string arg5, string arg6, string arg7, string arg8)
     {
         // Arrange
