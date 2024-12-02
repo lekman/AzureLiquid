@@ -1,17 +1,9 @@
 # Azure Liquid
 
-[![Unit Tests](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/ci_unit_tests.yml)
+[![NuGet](https://img.shields.io/nuget/v/AzureLiquid.svg)](https://www.nuget.org/packages/AzureLiquid)
 [![Code Scanning](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/codeql.yml)
+[![Qodana](https://github.com/lekman/AzureLiquid/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/lekman/AzureLiquid/actions/workflows/qodana_code_quality.yml)
 [![Coverage](https://codecov.io/gh/lekman/AzureLiquid/branch/main/graph/badge.svg?token=6449B7XRCS)](https://codecov.io/gh/lekman/AzureLiquid)
-
-## Packages
-
-| Package | Latest Version |
-| ------- | -------------- |
-| AzureLiquid | [![NuGet](https://img.shields.io/nuget/v/AzureLiquid.svg)](https://www.nuget.org/packages/AzureLiquid) |
-| AzureLiquid.Preview | [![NuGet](https://img.shields.io/nuget/v/AzureLiquid.Preview.svg)](https://www.nuget.org/packages/AzureLiquid.Preview) |
-
-## Overview
 
 Allows programmatic parsing, unit testing and live preview of Liquid templates, specifically designed for the Azure cloud services.
 
