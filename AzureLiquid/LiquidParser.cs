@@ -55,24 +55,6 @@ public class LiquidParser
     }
 
     /// <summary>
-    /// Sets the content JSON. Data will be available using the 'content' variable.
-    /// </summary>
-    /// <param name="json">The JSON data.</param>
-    /// <returns>
-    /// The current instance to use for method chaining.
-    /// </returns>
-    public LiquidParser SetContentJson(string json)
-    {
-        var content = "{ \"content\": " + json + " }";
-        var converter = new ExpandoObjectConverter();
-        var collection = JsonConvert.DeserializeObject<ExpandoObject>(content, converter);
-
-        _data = Hash.FromDictionary(new Dictionary<string, object>(collection!));
-
-        return this;
-    }
-
-    /// <summary>
     /// Sets the content JSON using XML text data as source.  Data will be available using the 'content' variable.
     /// </summary>
     /// <param name="xml">The XML data as string.</param>
@@ -123,5 +105,23 @@ public class LiquidParser
         {
             throw new LiquidParserException("No template loaded. Call the Parse method before calling Render.");
         }
+    }
+
+    /// <summary>
+    /// Sets the content JSON. Data will be available using the 'content' variable.
+    /// </summary>
+    /// <param name="json">The JSON data.</param>
+    /// <returns>
+    /// The current instance to use for method chaining.
+    /// </returns>
+    private LiquidParser SetContentJson(string json)
+    {
+        var content = "{ \"content\": " + json + " }";
+        var converter = new ExpandoObjectConverter();
+        var collection = JsonConvert.DeserializeObject<ExpandoObject>(content, converter);
+
+        _data = Hash.FromDictionary(new Dictionary<string, object>(collection!));
+
+        return this;
     }
 }
