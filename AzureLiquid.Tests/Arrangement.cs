@@ -24,7 +24,7 @@ public class Arrangement
             Expected = "<p>Jane Doe</p>"
         };
 
-        var simple = "Simple Template";
+        const string simple = "Simple Template";
         SimpleTemplate = new TemplateFact<BasicObject>
         {
             Content = new BasicObject(simple),

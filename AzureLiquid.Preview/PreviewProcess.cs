@@ -74,7 +74,7 @@ public class PreviewProcess
     /// <c>true</c> if should watch; otherwise, <c>false</c>.
     /// </value>
     [ExcludeFromCodeCoverage]
-    internal bool ShouldWatch { get; private set; }
+    private bool ShouldWatch { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether this instance can parse the inputs and render the output.
@@ -82,7 +82,7 @@ public class PreviewProcess
     /// <returns>
     /// <c>true</c> if this instance can parse; otherwise, <c>false</c>.
     /// </returns>
-    public bool CanRender => File.Exists(Template) && File.Exists(Content) && !string.IsNullOrEmpty(Output);
+    private bool CanRender => File.Exists(Template) && File.Exists(Content) && !string.IsNullOrEmpty(Output);
 
     /// <summary>
     /// Start a new instance of the <see cref="PreviewProcess" /> class using the incoming arguments.
@@ -114,7 +114,7 @@ public class PreviewProcess
     /// The arguments. Values are expected to be "--template", "--help", "--content", "--output" or
     /// "--watch".
     /// </param>
-    internal void ParseArguments(string[] args)
+    private void ParseArguments(string[] args)
     {
         for (var index = 0; index < args.Length; index++)
         {
@@ -147,16 +147,18 @@ public class PreviewProcess
     /// <param name="path">The target path.</param>
     private void ParseOutputResults(string[] args, int index, string arg, string path)
     {
-        if (IsArgMatch(arg, "output") && index - 1 < args.Length)
+        if (!IsArgMatch(arg, "output") || index - 1 >= args.Length)
         {
-            try
-            {
-                Output = Path.GetFullPath(args[index + 1], path);
-            }
-            catch
-            {
-                WriteErrorLine($"Invalid output path: {args[index + 1]}");
-            }
+            return;
+        }
+
+        try
+        {
+            Output = Path.GetFullPath(args[index + 1], path);
+        }
+        catch
+        {
+            WriteErrorLine($"Invalid output path: {args[index + 1]}");
         }
     }
 
@@ -169,16 +171,18 @@ public class PreviewProcess
     /// <param name="path">The target path.</param>
     private void ParseContent(string[] args, int index, string arg, string path)
     {
-        if (IsArgMatch(arg, "content") && index - 1 < args.Length)
+        if (!IsArgMatch(arg, "content") || index - 1 >= args.Length)
         {
-            try
-            {
-                Content = Path.GetFullPath(args[index + 1], path);
-            }
-            catch
-            {
-                WriteErrorLine($"Invalid content path: {args[index + 1]}");
-            }
+            return;
+        }
+
+        try
+        {
+            Content = Path.GetFullPath(args[index + 1], path);
+        }
+        catch
+        {
+            WriteErrorLine($"Invalid content path: {args[index + 1]}");
         }
     }
 
@@ -191,17 +195,18 @@ public class PreviewProcess
     /// <param name="path">The target path.</param>
     private void ParseTemplate(string[] args, int index, string arg, string path)
     {
-        // Parse incoming template file
-        if (IsArgMatch(arg, "template") && index - 1 < args.Length)
+        if (!IsArgMatch(arg, "template") || index - 1 >= args.Length)
         {
-            try
-            {
-                Template = Path.GetFullPath(args[index + 1], path);
-            }
-            catch
-            {
-                WriteErrorLine($"Invalid template path: {args[index + 1]}");
-            }
+            return;
+        }
+
+        try
+        {
+            Template = Path.GetFullPath(args[index + 1], path);
+        }
+        catch
+        {
+            WriteErrorLine($"Invalid template path: {args[index + 1]}");
         }
     }
 
@@ -213,14 +218,16 @@ public class PreviewProcess
     {
         preview.Render();
 
-        if (preview.ShouldWatch)
+        if (!preview.ShouldWatch)
         {
-            preview.StartWatch();
-            preview.LogMessage("Press any key to exit file watch...");
-            _ = Console.ReadKey();
-            preview.StopWatch();
-            preview.LogMessage();
+            return;
         }
+
+        preview.StartWatch();
+        preview.LogMessage("Press any key to exit file watch...");
+        _ = Console.ReadKey();
+        preview.StopWatch();
+        preview.LogMessage();
     }
 
     /// <summary>
@@ -229,12 +236,14 @@ public class PreviewProcess
     /// <param name="preview">The current preview process.</param>
     private static void LogMissingFiles(PreviewProcess preview)
     {
-        if (!string.IsNullOrEmpty(preview.Content) && !string.IsNullOrEmpty(preview.Template))
+        if (string.IsNullOrEmpty(preview.Content) || string.IsNullOrEmpty(preview.Template))
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            preview.LogMessage("  Unable to render as input files are not found");
-            preview.LogMessage();
+            return;
         }
+
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        preview.LogMessage("  Unable to render as input files are not found");
+        preview.LogMessage();
     }
 
     /// <summary>
@@ -244,7 +253,7 @@ public class PreviewProcess
     /// <param name="preview">The instance of <see cref="PreviewProcess" /> to handle the output.</param>
     private static void HandleNoArgumentsPassed(string[] args, PreviewProcess preview)
     {
-        if (args?.Length == 0)
+        if (args.Length == 0)
         {
             preview.WriteHelpOutput();
         }
@@ -376,17 +385,19 @@ public class PreviewProcess
     /// </summary>
     public void StartWatch()
     {
-        if (CanRender)
+        if (!CanRender)
         {
-            if (_contentWatcher == null)
-            {
-                _contentWatcher = StartWatch(Content);
-                _templateWatcher = StartWatch(Template);
-            }
-
-            _contentWatcher!.EnableRaisingEvents = true;
-            _templateWatcher!.EnableRaisingEvents = true;
+            return;
         }
+
+        if (_contentWatcher == null)
+        {
+            _contentWatcher = StartWatch(Content);
+            _templateWatcher = StartWatch(Template);
+        }
+
+        _contentWatcher!.EnableRaisingEvents = true;
+        _templateWatcher!.EnableRaisingEvents = true;
     }
 
     /// <summary>

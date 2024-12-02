@@ -140,11 +140,10 @@ public class PreviewProcessTests
     public void EnsureWatcher()
     {
         // Arrange
-        var instance = PreviewProcess.Create(new[]
-        {
+        var instance = PreviewProcess.Create([
             "--template", "./Resources/event.liquid", "--content", "./Resources/event.json", "--output",
             "./Resources/preview.txt"
-        });
+        ]);
 
         // Act
         instance.StartWatch();

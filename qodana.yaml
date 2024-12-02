@@ -8,3 +8,6 @@ exclude:
   - name: All
     paths:
       - AzureLiquid.Tests/Resources
+      - AzureLiquid.Preview/Properties/launchSettings.json
+  - name: UnusedMember.Global
+  - name: UnusedType.Global

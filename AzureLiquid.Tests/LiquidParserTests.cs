@@ -49,6 +49,7 @@ public class LiquidParserTests
     public void EnsureTemplateParsing()
     {
         Arrange(new Arrangement().SimpleTemplate);
+        Arrange(new Arrangement().Albums);
     }
 
     /// <summary>
@@ -84,7 +85,7 @@ public class LiquidParserTests
 
         if (fact.Content is string content)
         {
-            if (content!.Contains("<?xml"))
+            if (content.Contains("<?xml"))
             {
                 parser.SetContentXml(content);
             }

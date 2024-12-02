@@ -11,26 +11,26 @@ namespace AzureLiquid.Tests;
 public class TemplateFact<T>
 {
     /// <summary>
-    /// Gets or sets the template.
+    /// Gets the template.
     /// </summary>
     /// <value>
     /// The template.
     /// </value>
-    public string? Template { get; set; }
+    public string? Template { get; init; }
 
     /// <summary>
-    /// Gets or sets the expected result.
+    /// Gets the expected result.
     /// </summary>
     /// <value>
     /// The expected result.
     /// </value>
-    public string? Expected { get; set; }
+    public string? Expected { get; init; }
 
     /// <summary>
-    /// Gets or sets the content.
+    /// Gets the content.
     /// </summary>
     /// <value>
     /// The content.
     /// </value>
-    public T? Content { get; set; }
+    public T? Content { get; init; }
 }
