@@ -243,9 +243,9 @@ public class PreviewProcess
             Thread.Sleep(TimeSpan.FromSeconds(1));
             return ReadFileContent(filePath);
         }
-        catch (Exception e)
+        catch
         {
-            LogWarning($"Unable to read file: {filePath}", e);
+            LogWarning($"Unable to read file: {filePath}");
             return string.Empty;
         }
     }
