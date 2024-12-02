@@ -89,6 +89,7 @@ public class PreviewProcessTests
     [InlineData("--template", "./Resources/event_not_found.liquid", "--content", "./Resources/event.xml", "--output", "./Resources/preview.txt", "", "")]
     [InlineData("--template", "./Resources/empty.liquid", "--content", "./Resources/event.json", "--output", "./Resources/preview.txt", "", "")]
     [InlineData("--template", "./Resources/empty.liquid", "--content", "./Resources/empty.json", "--output", "./Resources/preview.txt", "", "")]
+    [InlineData("--template", "./Resources/empty.liquid", "--content", "./Resources/empty.pdf", "--output", "./Resources/preview.txt", "", "")]
     public void EnsureArgumentParsing(string arg1, string arg2, string arg3, string arg4, string arg5, string arg6, string arg7, string arg8)
     {
         // Arrange
@@ -99,6 +100,22 @@ public class PreviewProcessTests
 
         // Assert
         preview.Should().NotBeNull("A preview process should have been created");
+    }
+
+    /// <summary>
+    /// Ensure the preview process cannot run with correct input.
+    /// </summary>
+    [Fact]
+    public void EnsureCannotRenderWithoutContent()
+    {
+        // Arrange
+        var instance = new PreviewProcess();
+
+        // Act
+        var result = instance.Render();
+
+        // Assert
+        result.Should().BeEmpty("A result should not have been created");
     }
 
     /// <summary>
