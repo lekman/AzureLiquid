@@ -77,7 +77,7 @@ public class PreviewProcess
     /// Gets or sets a value indicating whether the process should watch for changes to template or content files.
     /// </summary>
     /// <value>
-    /// <c>true</c> if should watch; otherwise, <c>false</c>.
+    /// <c>true</c> if the process should watch for changes; otherwise, <c>false</c>.
     /// </value>
     [ExcludeFromCodeCoverage]
     private bool ShouldWatch { get; set; }
@@ -228,21 +228,23 @@ public class PreviewProcess
     /// Reads the file content.
     /// </summary>
     /// <param name="filePath">The file path.</param>
+    /// <param name="retry">The operation is being retried.</param>
     /// <returns>The file content.</returns>
-    internal string ReadFileContent(string filePath)
+    internal string ReadFileContent(string filePath, bool retry = false)
     {
         try
         {
             return File.ReadAllText(filePath);
         }
-        catch (IOException)
+        catch
         {
             // Lock issue, wait and retry
             Thread.Sleep(TimeSpan.FromSeconds(1));
-            return ReadFileContent(filePath);
-        }
-        catch
-        {
+            if (!retry)
+            {
+                return ReadFileContent(filePath, true);
+            }
+
             LogWarning($"Unable to read file: {filePath}");
             return string.Empty;
         }

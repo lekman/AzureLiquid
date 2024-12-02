@@ -144,6 +144,24 @@ public class PreviewProcessTests
     }
 
     /// <summary>
+    /// Ensure the preview process can read a file.
+    /// </summary>
+    [Fact]
+    public void EnsureFileReadExceptionHandling()
+    {
+        // Arrange
+        var instance = new PreviewProcess();
+        const string file = "notfound.liquid";
+
+        // Act
+        var result = instance.ReadFileContent(file);
+
+        // Assert
+        result.Should().BeEmpty("A result should not have been created");
+        instance.Log.Should().NotBeEmpty("A log should not have been created");
+    }
+
+    /// <summary>
     /// Contains arranged values used for testing, containing mock instances and expected return values.
     /// </summary>
     private class Arrangement
