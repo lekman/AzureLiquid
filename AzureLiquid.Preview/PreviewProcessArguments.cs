@@ -52,7 +52,7 @@ public class PreviewProcessArguments
     /// </summary>
     /// <param name="args">The passed arguments.</param>
     /// <param name="key">The key.</param>
-    /// <returns><c>true</c> if the argument was found, otherwise <c>false</c>,</returns>
+    /// <returns><c>true</c> if the argument was found, otherwise <c>false</c>.</returns>
     public static bool HasArgument(string[] args, string key) => args.Any(arg => IsArgMatch(arg, key));
 
     /// <summary>

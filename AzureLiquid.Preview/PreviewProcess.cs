@@ -221,9 +221,7 @@ public class PreviewProcess
         }
 
         var parser = new LiquidParser();
-        return !SetParserContent(parser, content) ?
-            string.Empty :
-            RenderTemplate(parser, template);
+        return !SetParserContent(parser, content) ? string.Empty : RenderTemplate(parser, template);
     }
 
     /// <summary>
@@ -231,7 +229,7 @@ public class PreviewProcess
     /// </summary>
     /// <param name="filePath">The file path.</param>
     /// <returns>The file content.</returns>
-    private string ReadFileContent(string filePath)
+    internal string ReadFileContent(string filePath)
     {
         try
         {
