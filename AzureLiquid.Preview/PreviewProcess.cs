@@ -162,7 +162,7 @@ public class PreviewProcess
     /// <param name="preview">The instance of <see cref="PreviewProcess" /> to handle the output.</param>
     private static void HandleNoArgumentsPassed(string[] args, PreviewProcess preview)
     {
-        if (args.Length == 0)
+        if (args == null || args.Length == 0)
         {
             preview.WriteHelpOutput();
         }

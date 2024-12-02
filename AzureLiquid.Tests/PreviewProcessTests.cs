@@ -162,6 +162,23 @@ public class PreviewProcessTests
     }
 
     /// <summary>
+    /// Ensure the preview process can handle missing arguments.
+    /// </summary>
+    [Fact]
+    public void EnsureHelpMessageShown()
+    {
+        // Arrange
+        var instance = PreviewProcess.Create(null!);
+
+        // Act
+        var result = instance.Render();
+
+        // Assert
+        result.Should().BeEmpty("A result should not have been created");
+        instance.Log.Should().NotBeEmpty("A log should not have been created");
+    }
+
+    /// <summary>
     /// Contains arranged values used for testing, containing mock instances and expected return values.
     /// </summary>
     private class Arrangement

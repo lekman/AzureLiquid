@@ -53,7 +53,7 @@ public class PreviewProcessArguments
     /// <param name="args">The passed arguments.</param>
     /// <param name="key">The key.</param>
     /// <returns><c>true</c> if the argument was found, otherwise <c>false</c>.</returns>
-    public static bool HasArgument(string[] args, string key) => args.Any(arg => IsArgMatch(arg, key));
+    public static bool HasArgument(string[] args, string key) => args?.Length > 0 && args.Any(arg => IsArgMatch(arg, key));
 
     /// <summary>
     /// Parses the argument value.
@@ -63,6 +63,11 @@ public class PreviewProcessArguments
     /// <returns>The argument value.</returns>
     public string ParsePath(string[] args, string key)
     {
+        if (args == null || args.Length == 0)
+        {
+            return string.Empty;
+        }
+
         var index = GetArgumentIndex(args, key);
         return
             index == -1 || index - 1 >= args.Length
