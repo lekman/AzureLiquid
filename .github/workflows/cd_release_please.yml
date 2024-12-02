@@ -47,7 +47,6 @@ jobs:
         uses: lekman/release-please-dotnet@v1
         with:
           manifest: ".release-please-manifest.json"
-          branch: ${{ github.event.pull_request.head.ref || github.ref_name }}
 
   publish:
     name: Publish
@@ -65,14 +64,9 @@ jobs:
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build
-
-      - name: Publish
-        run: dotnet publish -c Release
-
       - name: Publish to Nuget
-        run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+        run: |
+          dotnet restore
+          dotnet build
+          dotnet publish -c Release
+          dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
