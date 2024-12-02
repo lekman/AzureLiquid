@@ -187,7 +187,8 @@ public class PreviewProcessTests
     public void EnsureHelpMessageShown()
     {
         // Arrange
-        var instance = PreviewProcess.Create(null!);
+        var empty = new string[0];
+        var instance = PreviewProcess.Create(empty);
 
         // Act
         var result = instance.Render();

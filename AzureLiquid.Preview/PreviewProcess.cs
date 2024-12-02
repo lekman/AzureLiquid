@@ -105,7 +105,10 @@ public class PreviewProcess
         preview.Output = preview._args.ParsePath(args, "output");
         preview.ShouldWatch = PreviewProcessArguments.HasArgument(args, "watch");
 
-        HandleNoArgumentsPassed(args, preview);
+        if (args.Length == 0)
+        {
+            preview.WriteHelpOutput();
+        }
 
         if (preview.CanRender)
         {
@@ -153,19 +156,6 @@ public class PreviewProcess
         Console.ForegroundColor = ConsoleColor.Yellow;
         preview.LogMessage("  Unable to render as input files are not found");
         preview.LogMessage();
-    }
-
-    /// <summary>
-    /// Handles the scenario where no arguments are passed to the application.
-    /// </summary>
-    /// <param name="args">The array of arguments passed to the application.</param>
-    /// <param name="preview">The instance of <see cref="PreviewProcess" /> to handle the output.</param>
-    private static void HandleNoArgumentsPassed(string[] args, PreviewProcess preview)
-    {
-        if (args == null || args.Length == 0)
-        {
-            preview.WriteHelpOutput();
-        }
     }
 
     /// <summary>
