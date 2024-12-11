@@ -11,7 +11,7 @@ the [DotLiquid](https://github.com/dotliquid/dotliquid) library.
 > about
 > the original Liquid project, see [https://shopify.github.io/liquid/](https://shopify.github.io/liquid/).
 
-This library uses my [.NET 6.0 port](https://github.com/lekman/dotliquid-net6) of the same library, to allow for
+This library uses my [.NET port](https://github.com/lekman/dotliquid-net6) of the same library, to allow for
 cross-platform compilation and tooling support.
 
 Azure uses a set of predefined feature uses of DotLiquid. For example, an Azure Logic App mapping service uses the "
