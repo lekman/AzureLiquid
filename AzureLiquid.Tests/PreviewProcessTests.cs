@@ -2,6 +2,7 @@
 // Licensed under the open source Apache License, Version 2.0.
 // </copyright>
 
+using System;
 using System.IO;
 using System.Reflection;
 using AzureLiquid.Preview;
@@ -187,7 +188,7 @@ public class PreviewProcessTests
     public void EnsureHelpMessageShown()
     {
         // Arrange
-        var empty = new string[0];
+        var empty = Array.Empty<string>();
         var instance = PreviewProcess.Create(empty);
 
         // Act
